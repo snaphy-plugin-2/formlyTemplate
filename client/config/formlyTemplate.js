@@ -1357,7 +1357,7 @@ angular.module($snaphy.getModuleName())
                         } else {
                             $http({
                                 method: 'DELETE',
-                                url: url.delete,
+                                url: url.delete
                             }).then(function successCallback() {
                                 // console.log("File successfully deleted.");
                                 SnaphyTemplate.notify({
@@ -1396,9 +1396,12 @@ angular.module($snaphy.getModuleName())
         name: 'date',
         templateUrl:'/formlyTemplate/views/date.html',
         link: function(scope, elem, attrs){
+            App.initHelpers(['datepicker']);
+
             var getRandom = function(){
                 return Math.floor((Math.random()*6)+1);
             };
+
 
             scope.to.format = scope.to.format || "mm/dd/yyyy";
             scope.to.id = scope.to.id || "date_" + getRandom();
