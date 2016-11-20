@@ -13,7 +13,7 @@ angular.module($snaphy.getModuleName())
     formlyConfig.setType({
         name: 'belongsTo',
         templateUrl: '/formlyTemplate/views/autocomplete.html',
-        controller: function($scope) {
+        controller: ["$scope", function($scope) {
             //set initial view..
             $scope.to.hide = $scope.to.hide || false;
             //Where tracker object for tracking where where values..
@@ -30,82 +30,87 @@ angular.module($snaphy.getModuleName())
             };
 
 
-        var trackWhere = function(){
+            var trackWhere = function(){
 
-            //If where query added for filter..
-            if($scope.to.where){
-                //Form the where query..
-                for(var key in $scope.to.where){
-                    if($scope.to.where.hasOwnProperty(key)){
-                        var keyObj = $scope.to.where[key];
-                        whereTracker[key] = keyObj;
+                //If where query added for filter..
+                if($scope.to.where){
+                    //Form the where query..
+                    for(var key in $scope.to.where){
+                        if($scope.to.where.hasOwnProperty(key)){
+                            var keyObj = $scope.to.where[key];
+                            whereTracker[key] = keyObj;
+                        }
                     }
-                }
-                
-            }
 
-            //Now reset where..
-            $scope.to.where = {};
-
-            /**
-             * Watch the model change for applying the where query..
-             * @param {String} whereKey     key  of the where object
-             * @param {String} mainModelObj value of the where object.
-             * @example
-             * "where":{
-                  "postId": {
-                    "relationName": "post",
-                    "relationKey": "id",
-                    "key": "postId"
-                  }
                 }
-             */
-            //Watch for monotoring the where model for perfect search.
-            $scope.$watch("model",
-                function() {
-                    if(whereTracker){
-                        //RUn a loop and add all value to where..
-                        for(var whereKey in whereTracker){
-                            if(whereTracker.hasOwnProperty(whereKey)){
-                                var mainModelObj = whereTracker[whereKey];
-                                if(mainModelObj){
-                                    //var key = mainModelObj.key;
-                                    var relationName = mainModelObj.relationName;
-                                    var relationKey = mainModelObj.relationKey;
-                                    /*if(key){
-                                        if($scope.model[key]){
-                                            $timeout(function() {
-                                                $scope.to.where[whereKey] = $scope.model[key];
-                                            }, 0);
-                                        } 
-                                        else{
+
+                //Now reset where..
+                $scope.to.where = {};
+
+                /**
+                 * Watch the model change for applying the where query..
+                 * @param {String} whereKey     key  of the where object
+                 * @param {String} mainModelObj value of the where object.
+                 * @example
+                 * "where":{
+                      "postId": {
+                        "relationName": "post",
+                        "relationKey": "id",
+                        "key": "postId"
+                      }
+                    }
+                 */
+                //Watch for monotoring the where model for perfect search.
+                $scope.$watch("model",
+                    function() {
+                        if(whereTracker){
+                            //RUn a loop and add all value to where..
+                            for(var whereKey in whereTracker){
+                                if(whereTracker.hasOwnProperty(whereKey)){
+                                    var mainModelObj = whereTracker[whereKey];
+                                    if(mainModelObj){
+                                        //var key = mainModelObj.key;
+                                        var relationName = mainModelObj.relationName;
+                                        var relationKey = mainModelObj.relationKey;
+                                        /*if(key){
+                                            if($scope.model[key]){
+                                                $timeout(function() {
+                                                    $scope.to.where[whereKey] = $scope.model[key];
+                                                }, 0);
+                                            }
+                                            else{
+                                                if(relationName && relationKey){
+                                                    if($scope.model[relationName]){
+                                                        if($scope.model[relationName][relationKey]){
+                                                            $timeout(function() {
+                                                                $scope.to.where[whereKey] = $scope.model[relationName][relationKey];
+                                                            }, 0);
+                                                        }
+                                                    } //if
+                                                }
+                                            }//else
+                                        }else{
                                             if(relationName && relationKey){
                                                 if($scope.model[relationName]){
                                                     if($scope.model[relationName][relationKey]){
                                                         $timeout(function() {
                                                             $scope.to.where[whereKey] = $scope.model[relationName][relationKey];
-                                                        }, 0);    
-                                                    }
+                                                        }, 0);
+                                                    } //if
                                                 } //if
-                                            }
-                                        }//else      
-                                    }else{
+                                            }//if
+                                        } //else*/
                                         if(relationName && relationKey){
                                             if($scope.model[relationName]){
                                                 if($scope.model[relationName][relationKey]){
                                                     $timeout(function() {
                                                         $scope.to.where[whereKey] = $scope.model[relationName][relationKey];
-                                                    }, 0);    
-                                                } //if
-                                            } //if
-                                        }//if
-                                    } //else*/
-                                    if(relationName && relationKey){
-                                        if($scope.model[relationName]){
-                                            if($scope.model[relationName][relationKey]){
-                                                $timeout(function() {
-                                                    $scope.to.where[whereKey] = $scope.model[relationName][relationKey];
-                                                }, 0);    
+                                                    }, 0);
+                                                }else{
+                                                    $timeout(function() {
+                                                        $scope.to.where[whereKey] = null;
+                                                    }, 0);
+                                                }
                                             }else{
                                                 $timeout(function() {
                                                     $scope.to.where[whereKey] = null;
@@ -116,21 +121,16 @@ angular.module($snaphy.getModuleName())
                                                 $scope.to.where[whereKey] = null;
                                             }, 0);
                                         }
-                                    }else{
-                                        $timeout(function() {
-                                            $scope.to.where[whereKey] = null;
-                                        }, 0);
-                                    }
-                                } //if
+                                    } //if
+                                }
                             }
                         }
-                    }
-                }, 
-                true
-            );
-        }; //trackWhere
+                    },
+                    true
+                );
+            }; //trackWhere
 
-        trackWhere();
+            trackWhere();
 
             
 
@@ -146,19 +146,19 @@ angular.module($snaphy.getModuleName())
 
             $scope.$watch("model[options.key]",
                 function() {
-                    if($scope.model[$scope.options.key] === undefined && $scope.forceDisplayAddFields && $scope.to.create){    
+                    if($scope.model[$scope.options.key] === undefined && $scope.forceDisplayAddFields && $scope.to.create){
                         $timeout(function() {
                                 $scope.model[$scope.options.key] = {};
                         },0);
-                      
-                    } 
+
+                    }
                 }
             );
 
-            
 
 
-            
+
+
 
 
 
@@ -212,7 +212,7 @@ angular.module($snaphy.getModuleName())
             };
 
 
-            
+
 
 
 
@@ -254,7 +254,7 @@ angular.module($snaphy.getModuleName())
                 return $scope.to.id;
             };
 
-        }
+        }]
     });
 
 
@@ -263,7 +263,7 @@ angular.module($snaphy.getModuleName())
     formlyConfig.setType({
         name: 'repeatSection',
         templateUrl: '/formlyTemplate/views/hasManyTemplate.html',
-        controller: function($scope) {
+        controller: ["$scope", function($scope) {
             $scope.to.hide = $scope.to.hide || false;
             //Set the value initially to hide position..
             $scope.hide = $scope.to.hide;
@@ -347,14 +347,14 @@ angular.module($snaphy.getModuleName())
             }
 
 
-        }
+        }]
     });
 
     formlyConfig.setType({
         name: 'arrayValue',
         templateUrl: '/formlyTemplate/views/arrayTemplate.html',
         link: function(scope, element, attrs) {},
-        controller: function($scope) {
+        controller: ["$scope", function($scope) {
             var unique = 1;
             $scope.formOptions = {
                 formState: $scope.formState
@@ -443,7 +443,7 @@ angular.module($snaphy.getModuleName())
 
             $scope.addNew = methods.addNew;
             $scope.copyFields = methods.copyFields;
-        }
+        }]
     });
 
 
@@ -454,8 +454,6 @@ angular.module($snaphy.getModuleName())
         name: 'objectValue',
         templateUrl: '/formlyTemplate/views/objectTemplate.html',
         controller: ['$scope', function($scope) {
-
-
         }],
         link: function(scope, element) {
             if(scope.model[scope.options.key] === undefined){
