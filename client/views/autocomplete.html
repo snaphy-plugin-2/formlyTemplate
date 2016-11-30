@@ -1,4 +1,4 @@
-<div class="relatedData">
+<div ng-if="display" class="relatedData">
     <div class="row">
         <strong  class="col-xs-12 col-md-12 showRelatedData"><small><a ng-click="toggleShow()">{{showOrHide()}} related data</a></small></strong>
     </div>
@@ -19,6 +19,7 @@
                                 value="model[options.key]" 
                                 where="to.where"
                                 where-validation="to.whereValidation"
+                                display-property="to.displayProperty"
                                 name="{{getName()}}" id="{{getId()}}" >
                             </autocomplete>
                             <autocomplete
@@ -29,6 +30,7 @@
                                 value="model[options.key]" 
                                 where="to.where"
                                 where-validation="to.whereValidation"
+                                display-property="to.displayProperty"
                                 name="{{getName()}}" id="{{getId()}}">
                             </autocomplete>
                         </div>

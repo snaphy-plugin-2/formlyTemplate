@@ -15,11 +15,12 @@ angular.module($snaphy.getModuleName())
         templateUrl: '/formlyTemplate/views/autocomplete.html',
         controller: ["$scope", function($scope) {
             //set initial view..
-            $scope.to.hide = $scope.to.hide || false;
+            $scope.to.hide = $scope.to.hide !== undefined? $scope.to.hide : false;
             //Where tracker object for tracking where where values..
             var whereTracker = {};
             //Set the value initially to hide position..
             $scope.hide = $scope.to.hide;
+            $scope.display = $scope.to.display !== undefined ? $scope.to.display : true;
             $scope.showOrHide = function(){
                 if($scope.hide){
                     //Show opposite
@@ -31,17 +32,14 @@ angular.module($snaphy.getModuleName())
 
 
             var trackWhere = function(){
-
                 //If where query added for filter..
                 if($scope.to.where){
                     //Form the where query..
                     for(var key in $scope.to.where){
                         if($scope.to.where.hasOwnProperty(key)){
-                            var keyObj = $scope.to.where[key];
-                            whereTracker[key] = keyObj;
+                            whereTracker[key] = $scope.to.where[key];
                         }
                     }
-
                 }
 
                 //Now reset where..
@@ -60,7 +58,7 @@ angular.module($snaphy.getModuleName())
                       }
                     }
                  */
-                //Watch for monotoring the where model for perfect search.
+                //Watch for monitoring the where model for perfect search.
                 $scope.$watch("model",
                     function() {
                         if(whereTracker){
@@ -72,34 +70,6 @@ angular.module($snaphy.getModuleName())
                                         //var key = mainModelObj.key;
                                         var relationName = mainModelObj.relationName;
                                         var relationKey = mainModelObj.relationKey;
-                                        /*if(key){
-                                            if($scope.model[key]){
-                                                $timeout(function() {
-                                                    $scope.to.where[whereKey] = $scope.model[key];
-                                                }, 0);
-                                            }
-                                            else{
-                                                if(relationName && relationKey){
-                                                    if($scope.model[relationName]){
-                                                        if($scope.model[relationName][relationKey]){
-                                                            $timeout(function() {
-                                                                $scope.to.where[whereKey] = $scope.model[relationName][relationKey];
-                                                            }, 0);
-                                                        }
-                                                    } //if
-                                                }
-                                            }//else
-                                        }else{
-                                            if(relationName && relationKey){
-                                                if($scope.model[relationName]){
-                                                    if($scope.model[relationName][relationKey]){
-                                                        $timeout(function() {
-                                                            $scope.to.where[whereKey] = $scope.model[relationName][relationKey];
-                                                        }, 0);
-                                                    } //if
-                                                } //if
-                                            }//if
-                                        } //else*/
                                         if(relationName && relationKey){
                                             if($scope.model[relationName]){
                                                 if($scope.model[relationName][relationKey]){
@@ -132,8 +102,6 @@ angular.module($snaphy.getModuleName())
 
             trackWhere();
 
-            
-
 
             if($scope.to.init){
                 //Display show create if forcefully displayed set to true..
@@ -154,12 +122,6 @@ angular.module($snaphy.getModuleName())
                     }
                 }
             );
-
-
-
-
-
-
 
 
             $scope.isHidden = function(){
@@ -210,9 +172,6 @@ angular.module($snaphy.getModuleName())
                 }
 
             };
-
-
-
 
 
 
@@ -280,13 +239,6 @@ angular.module($snaphy.getModuleName())
                 return $scope.hide;
             };
 
-
-            if($scope.to.init === true){
-                //Add a new field..
-                $scope.addNew();
-            }
-
-
             $scope.toggleShow = function(){
                 $scope.hide = !$scope.hide;
                 return $scope.hide;
@@ -332,6 +284,16 @@ angular.module($snaphy.getModuleName())
                 repeatsection.push(newsection);
             }
 
+
+            if($scope.to.init === true){
+                //Add a new field..
+                $scope.addNew();
+            }
+
+            function getRandomInt(min, max) {
+                return Math.floor(Math.random() * (max - min)) + min;
+            }
+
             function addRandomIds(fields) {
                 unique++;
                 angular.forEach(fields, function(field, index) {
@@ -350,6 +312,9 @@ angular.module($snaphy.getModuleName())
         }]
     });
 
+
+
+
     formlyConfig.setType({
         name: 'arrayValue',
         templateUrl: '/formlyTemplate/views/arrayTemplate.html',
@@ -360,20 +325,9 @@ angular.module($snaphy.getModuleName())
                 formState: $scope.formState
             };
 
-            //console.log($scope.to);
-
-            /*$scope.initialize = function(to){
-                if(to.init){
-                    //Initialize one ..
-                    console.log("Initialize");
-                    $scope.addNew();
-                }
-            };
-*/
             var methods = (function() {
+                //Run the constructor on start..
                 function init() {
-
-
                     //Initialize the methods..
                     if ($scope.model[$scope.options.key] === undefined) {
                         addNew();

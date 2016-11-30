@@ -17,13 +17,22 @@ angular.module($snaphy.getModuleName())
                 "value"          : "=value",
                 "where"          : "=where",
                 "whereValidation": "=whereValidation",
+                "onChange"       : "&onChange",
+                //To display any additional property to..array of objects..
+                /**
+                 * [ { name: "amount", "prefix": "Rupee" }  ]
+                 */
+                "displayProperty": "=?displayProperty"
             },
-            template: '<select  ng-transclude><option value=""></option></select>' ,
+            template: '<select ng-transclude><option value=""></option></select>' ,
             link: function(scope, iElm, iAttrs, controller) {
                 if(!scope.modelName || !scope.searchProperty){
                     console.error("Error >>> searchProperty and modelName attributes are required");
                     return false;
                 }
+
+                scope.displayProperty = scope.displayProperty || [];
+
 
                 scope.placeholder = "Search ".toUpperCase() + scope.modelName.toUpperCase() + " " + scope.searchProperty.toUpperCase();
                 $(iElm).attr("placeholder", scope.placeholder);
@@ -38,11 +47,39 @@ angular.module($snaphy.getModuleName())
                     create: false,
                     render: {
                         option: function(item, escape) {
+
+                            var parent = "";
+
+                            if(scope.displayProperty){
+                                scope.displayProperty.forEach(function(prop){
+                                    //var element = "<span><strong>";
+                                    var element = "<span>";
+                                    if(prop.prefix){
+                                        element = element + " " + prop.prefix ;
+                                    }
+
+                                    if(prop.name){
+
+                                        if(item[prop.name]){
+                                            element = element + " " + item[prop.name];
+                                        }
+                                    }
+
+                                    if(prop.suffix){
+                                        element = element + " "  + prop.suffix;
+                                    }
+
+                                    //element  = element + "</strong></span>";
+                                    element  = element + "</span>";
+
+                                    parent = parent + element;
+
+                                });
+                            }
+
                             return '<div class="row">' +
-                                    (item[scope.searchProperty] ? '<span class="col-md-6" ><strong>' + escape(item[scope.searchProperty]) + '</strong></span>' : '') +
-                                    //'<div class="row">' +
-                                    (item["firstName"] ? '<span class="col-md-6" ><strong>' + escape(item["firstName"]) + " " + item["lastName"] + '</strong></span>' : '') +
-                                    //'</div>' +
+                                    (item[scope.searchProperty] ? '<span class="col-md-12" style="text-align: left" ><strong>' + escape(item[scope.searchProperty]) + '</strong></span>' : '') +
+                                    (parent ? '<div class="col-md-12" style="text-align: left"><strong>' + parent + '</strong></div>' : '') +
                                 '</div>';  
                                 
                         }
@@ -102,6 +139,12 @@ angular.module($snaphy.getModuleName())
                                 delete val[0].$order;
                             }
                             scope.value = val[0];
+
+                            $timeout(function(){
+                                //Call the change functon..
+                                scope.onChange();
+                            }, 0);
+
                         }, 0);
 
                     }
@@ -189,13 +232,6 @@ angular.module($snaphy.getModuleName())
                     }
 
                 });
-
-
-
-
-
-
-
             } //LInk  function
         }; //END Return
     }])
