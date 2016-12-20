@@ -32,14 +32,17 @@ angular.module($snaphy.getModuleName())
 
 
             var trackWhere = function(){
+
                 //If where query added for filter..
                 if($scope.to.where){
                     //Form the where query..
                     for(var key in $scope.to.where){
                         if($scope.to.where.hasOwnProperty(key)){
-                            whereTracker[key] = $scope.to.where[key];
+                            var keyObj = $scope.to.where[key];
+                            whereTracker[key] = keyObj;
                         }
                     }
+
                 }
 
                 //Now reset where..
@@ -51,14 +54,14 @@ angular.module($snaphy.getModuleName())
                  * @param {String} mainModelObj value of the where object.
                  * @example
                  * "where":{
-                      "postId": {
-                        "relationName": "post",
-                        "relationKey": "id",
-                        "key": "postId"
-                      }
-                    }
+                  "postId": {
+                    "relationName": "post",
+                    "relationKey": "id",
+                    "key": "postId"
+                  }
+                }
                  */
-                //Watch for monitoring the where model for perfect search.
+                //Watch for monotoring the where model for perfect search.
                 $scope.$watch("model",
                     function() {
                         if(whereTracker){
@@ -66,16 +69,34 @@ angular.module($snaphy.getModuleName())
                             for(var whereKey in whereTracker){
                                 if(whereTracker.hasOwnProperty(whereKey)){
                                     var mainModelObj = whereTracker[whereKey];
+
                                     if(mainModelObj){
                                         //var key = mainModelObj.key;
                                         var relationName = mainModelObj.relationName;
                                         var relationKey = mainModelObj.relationKey;
-                                        if(relationName && relationKey){
-                                            if($scope.model[relationName]){
-                                                if($scope.model[relationName][relationKey]){
-                                                    $timeout(function() {
-                                                        $scope.to.where[whereKey] = $scope.model[relationName][relationKey];
-                                                    }, 0);
+
+                                        if(typeof mainModelObj === "string"){
+                                            /*
+                                             IN case if where key and value is already given static way..
+                                             "where":{
+                                             "type": "category"
+                                             }
+                                             */
+                                            //Just add the value to the key..
+                                            $scope.to.where[whereKey] = mainModelObj;
+
+                                        }else{
+                                            if(relationName && relationKey){
+                                                if($scope.model[relationName]){
+                                                    if($scope.model[relationName][relationKey]){
+                                                        $timeout(function() {
+                                                            $scope.to.where[whereKey] = $scope.model[relationName][relationKey];
+                                                        }, 0);
+                                                    }else{
+                                                        $timeout(function() {
+                                                            $scope.to.where[whereKey] = null;
+                                                        }, 0);
+                                                    }
                                                 }else{
                                                     $timeout(function() {
                                                         $scope.to.where[whereKey] = null;
@@ -86,10 +107,6 @@ angular.module($snaphy.getModuleName())
                                                     $scope.to.where[whereKey] = null;
                                                 }, 0);
                                             }
-                                        }else{
-                                            $timeout(function() {
-                                                $scope.to.where[whereKey] = null;
-                                            }, 0);
                                         }
                                     } //if
                                 }
