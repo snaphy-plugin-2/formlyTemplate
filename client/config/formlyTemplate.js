@@ -535,24 +535,27 @@ angular.module($snaphy.getModuleName())
                 };
 
 
+
+                /**
+                 * Check if file is loaded from server or not.
+                 * @param file
+                 * @returns {boolean}
+                 */
                 $scope.loadFromServer = function(file) {
-                    if (file.result) {
-                        //Check if file really has one params..
-                        var count = 0;
-                        for (var key in file) {
-                            if (file.hasOwnProperty(key)) {
-                                count++;
-                            }
-                        }
-                        if (count <= 4) {
-                            return true;
-                        } else {
+                    if(file){
+                        if(file.progress){
                             return false;
                         }
+                        if (file.result) {
+                            return true;
+                        }
+                        return false;
+                    }else{
+                        return false;
                     }
-                    return false;
-                };
 
+                };
+                
 
                 $scope.loadUrl = function(file) {
                     //TODO adding medium for small images load..
@@ -853,37 +856,58 @@ angular.module($snaphy.getModuleName())
                     }
                 };
 
-
+                /**
+                 * Check if file is loaded from server or not.
+                 * @param file
+                 * @returns {boolean}
+                 */
                 $scope.loadFromServer = function(file) {
-                    if (file.result) {
-                        //Check if file really has one params..
-                        var count = 0;
-                        for (var key in file) {
-                            if (file.hasOwnProperty(key)) {
-                                count++;
-                            }
-                        }
-                        if (count === 3) {
-                            return true;
-                        } else {
+                    if(file){
+                        if(file.progress){
                             return false;
                         }
+                        if (file.result) {
+                            return true;
+                            /*//Check if file really has one params..
+                            var count = 0;
+                            for (var key in file) {
+                                if (file.hasOwnProperty(key)) {
+                                    count++;
+                                }
+                            }
+                            if (count === 3) {
+                                return true;
+                            } else {
+                                return false;
+                            }*/
+                        }
+                        return false;
+                    }else{
+                        return false;
                     }
-                    return false;
+
                 };
 
-
+                /**
+                 * Return the absolute url for loading file.
+                 * @param file
+                 * @returns {*}
+                 */
                 $scope.loadUrl = function(file) {
-                    //TODO adding medium for small images load..
-                    if(file.result){
-                        if(file.result.url){
-                            if(file.result.url.unSignedUrl){
-                                return file.result.url.unSignedUrl;
+                    if(file){
+                        if(file.result){
+                            if(file.result.url){
+                                if(file.result.url.unSignedUrl){
+                                    return file.result.url.unSignedUrl;
+                                }
                             }
+                            if(file.result.container){
+                                return "/api/containers/" + file.result.container + "/download/medium_" + file.result.name;
+                            }
+
                         }
                     }
-                    var url = "/api/containers/" + file.result.container + "/download/medium_" + file.result.name;
-                    return url;
+                    return null;
                 };
 
 
@@ -1158,7 +1182,29 @@ angular.module($snaphy.getModuleName())
                     }
                 };
 
+                /**
+                 * Check if file is loaded from server or not.
+                 * @param file
+                 * @returns {boolean}
+                 */
+                $scope.loadFromServer = function(file) {
+                    if(file){
+                        if(file.progress){
+                            return false;
+                        }
+                        if (file.result) {
+                            return true;
+                        }
+                        return false;
+                    }else{
+                        return false;
+                    }
 
+                };
+
+
+                /*
+                Old Method
                 $scope.loadFromServer = function(file) {
                     if (file.result) {
                         //Check if file really has one params..
@@ -1177,7 +1223,7 @@ angular.module($snaphy.getModuleName())
                     return false;
                 };
 
-
+*/
                 $scope.loadUrl = function(file) {
                     var url = "/api/containers/" + file.result.container + "/download/" + file.result.name;
                     return url;
