@@ -36,8 +36,8 @@ angular.module($snaphy.getModuleName())
                 $(iElm).attr("placeholder", scope.placeholder);
 
                 var loadSelectize = function(options){
-                    options = options || [];
                     //console.log(options);
+                    scope.options = angular.copy(options);
                     $(iElm).attr("placeholder", scope.placeholder);
                     //Load selectize now..
                     var selectize_ = $(iElm).selectize({
@@ -87,7 +87,7 @@ angular.module($snaphy.getModuleName())
 
                             }
                         },
-                        options: options,
+                        options: scope.options,
                         load: function(query, callback) {
                             if (!query.length) return callback();
                             if(scope.init){
