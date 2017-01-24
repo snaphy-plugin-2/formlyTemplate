@@ -16,7 +16,7 @@ angular.module($snaphy.getModuleName())
                 //Contains the value of the data.. that needs to be updated.
                 "value"          : "=value",
                 "where"          : "=where",
-                "init"           : "=?init", //if init === true then fetched all data on start only.
+                "load"           : "=?load", //if init === true then fetched all data on start only.
                 "whereValidation": "=whereValidation",
                 "onChange"       : "&onChange",
                 //To display any additional property to..array of objects..
@@ -35,10 +35,7 @@ angular.module($snaphy.getModuleName())
                 scope.placeholder = "Search ".toUpperCase() + scope.modelName.toUpperCase() + " " + scope.searchProperty.toUpperCase();
                 $(iElm).attr("placeholder", scope.placeholder);
 
-                var loadSelectize = function(options){
-                    console.log(options);
-                    scope.options = angular.copy(options);
-                    $(iElm).attr("placeholder", scope.placeholder);
+                var loadSelectize = function(){
                     //Load selectize now..
                     var selectize_ = $(iElm).selectize({
                         maxItems: 1,
@@ -87,11 +84,10 @@ angular.module($snaphy.getModuleName())
 
                             }
                         },
-                        options: scope.options,
                         load: function(query, callback) {
                             if (!query.length) return callback();
-                            if(scope.init){
-                               return callback();
+                            if(scope.load){
+                                return callback();
                             }
                             //Add the where query..
                             addWhereQuery(function(err){
@@ -112,7 +108,7 @@ angular.module($snaphy.getModuleName())
 
                                     dbService.find({
                                         filter: {
-                                            limit: 10,
+                                            limit: 5,
                                             where: whereObj
                                         }
                                     }, function(values, headers) {
@@ -245,7 +241,10 @@ angular.module($snaphy.getModuleName())
 
                 //Init selectize..
                 (function(){
-                    if(scope.init){
+                    //Load selectize..
+                    loadSelectize();
+
+                    if(scope.load){
                         //Load all the data at once..
                         //Add the where query..
                         addWhereQuery(function(err){
@@ -263,18 +262,17 @@ angular.module($snaphy.getModuleName())
                                     }
                                 }, function(values) {
                                     if(values){
-                                        $timeout(function(){
-                                            loadSelectize(values);
+                                        var select = $(iElm).selectize();
+                                        var selectize = select[0].selectize;
+                                        var options = angular.copy(values);
+                                        options.forEach(function(option){
+                                            selectize.addOption(option);
                                         });
                                     }
                                 }, function(httpResp) {
                                     console.error(httpResp);
                                 });
                             }
-                        });
-                    }else{
-                        $timeout(function(){
-                            loadSelectize();
                         });
                     }
                 })(); //Load Method
@@ -393,7 +391,6 @@ angular.module($snaphy.getModuleName())
                 var select = $(iElm).selectize();
                 var selectize = select[0].selectize;
                 selectize.on("item_remove", function(value, $item){
-                    console.log(value);
                     //Remove the data from the model too..
                     var index = null;
                     for(var i=0; i<scope.value.length; i++){

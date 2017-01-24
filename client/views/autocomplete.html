@@ -10,30 +10,30 @@
                 <div class="form-group">
                     <div ng-class="options.templateOptions.colSize">
                         <div style="margin-left: 10px;" class="form-material" ng-class="options.templateOptions.color">
-                       
+
                             <autocomplete
-                                ng-if="options.templateOptions.id"
-                                placeholder="{{placeholder}}"
-                                model-name="{{to.model}}"
-                                search-property="{{to.searchProp}}"
-                                value="model[options.key]" 
-                                where="to.where"
-                                where-validation="to.whereValidation"
-                                init="to.load"
-                                display-property="to.displayProperty"
-                                name="{{getName()}}" id="{{getId()}}" >
+                                    ng-if="options.templateOptions.id"
+                                    placeholder="{{placeholder}}"
+                                    model-name="{{to.model}}"
+                                    search-property="{{to.searchProp}}"
+                                    value="model[options.key]"
+                                    where="to.where"
+                                    load="to.load"
+                                    where-validation="to.whereValidation"
+                                    display-property="to.displayProperty"
+                                    name="{{getName()}}" id="{{getId()}}" >
                             </autocomplete>
                             <autocomplete
-                                ng-if="!options.templateOptions.id"
-                                placeholder="{{placeholder}}"
-                                model-name="{{to.model}}"
-                                search-property="{{to.searchProp}}"
-                                value="model[options.key]" 
-                                where="to.where"
-                                where-validation="to.whereValidation"
-                                init="to.load"
-                                display-property="to.displayProperty"
-                                name="{{getName()}}" id="{{getId()}}">
+                                    ng-if="!options.templateOptions.id"
+                                    placeholder="{{placeholder}}"
+                                    model-name="{{to.model}}"
+                                    search-property="{{to.searchProp}}"
+                                    value="model[options.key]"
+                                    where="to.where"
+                                    load="to.load"
+                                    where-validation="to.whereValidation"
+                                    display-property="to.displayProperty"
+                                    name="{{getName()}}" id="{{getId()}}">
                             </autocomplete>
                         </div>
                     </div>
