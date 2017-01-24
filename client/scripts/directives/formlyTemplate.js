@@ -37,7 +37,7 @@ angular.module($snaphy.getModuleName())
 
                 var loadSelectize = function(options){
                     options = options || [];
-                    console.log(options);
+                    //console.log(options);
                     //Load selectize now..
                     var selectize_ = $(iElm).selectize({
                         maxItems: 1,
