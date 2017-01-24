@@ -38,6 +38,7 @@ angular.module($snaphy.getModuleName())
                 var loadSelectize = function(options){
                     options = options || [];
                     //console.log(options);
+                    $(iElm).attr("placeholder", scope.placeholder);
                     //Load selectize now..
                     var selectize_ = $(iElm).selectize({
                         maxItems: 1,
@@ -155,7 +156,6 @@ angular.module($snaphy.getModuleName())
 
                         }
                     }); //END OF Selectize function..
-                    return selectize_;
                 }; //loadSelectize
 
 
@@ -263,8 +263,9 @@ angular.module($snaphy.getModuleName())
                                     }
                                 }, function(values) {
                                     if(values){
-                                        $(iElm).attr("placeholder", scope.placeholder);
-                                        loadSelectize(values);
+                                        $timeout(function(){
+                                            loadSelectize(values);
+                                        });
                                     }
                                 }, function(httpResp) {
                                     console.error(httpResp);
@@ -272,7 +273,9 @@ angular.module($snaphy.getModuleName())
                             }
                         });
                     }else{
-                        loadSelectize();
+                        $timeout(function(){
+                            loadSelectize();
+                        });
                     }
                 })(); //Load Method
 
