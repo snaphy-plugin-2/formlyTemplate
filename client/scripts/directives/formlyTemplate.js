@@ -16,6 +16,7 @@ angular.module($snaphy.getModuleName())
                 //Contains the value of the data.. that needs to be updated.
                 "value"          : "=value",
                 "where"          : "=where",
+                "init"           : "=?init", //if init === true then fetched all data on start only.
                 "whereValidation": "=whereValidation",
                 "onChange"       : "&onChange",
                 //To display any additional property to..array of objects..
@@ -30,125 +31,133 @@ angular.module($snaphy.getModuleName())
                     console.error("Error >>> searchProperty and modelName attributes are required");
                     return false;
                 }
-
                 scope.displayProperty = scope.displayProperty || [];
-
-
                 scope.placeholder = "Search ".toUpperCase() + scope.modelName.toUpperCase() + " " + scope.searchProperty.toUpperCase();
                 $(iElm).attr("placeholder", scope.placeholder);
 
-                var selectize_ = $(iElm).selectize({
-                    maxItems: 1,
-                    valueField: 'id',
-                    labelField: scope.searchProperty,
-                    searchField: scope.searchProperty,
-                    delimiter: ',',
-                    persist: false,
-                    create: false,
-                    render: {
-                        option: function(item, escape) {
+                var loadSelectize = function(options){
+                    options = options || [];
+                    //Load selectize now..
+                    var selectize_ = $(iElm).selectize({
+                        maxItems: 1,
+                        valueField: 'id',
+                        labelField: scope.searchProperty,
+                        searchField: scope.searchProperty,
+                        delimiter: ',',
+                        persist: false,
+                        create: false,
+                        render: {
+                            option: function(item, escape) {
 
-                            var parent = "";
+                                var parent = "";
 
-                            if(scope.displayProperty){
-                                scope.displayProperty.forEach(function(prop){
-                                    //var element = "<span><strong>";
-                                    var element = "<span>";
-                                    if(prop.prefix){
-                                        element = element + " " + prop.prefix ;
-                                    }
-
-                                    if(prop.name){
-
-                                        if(item[prop.name]){
-                                            element = element + " " + item[prop.name];
+                                if(scope.displayProperty){
+                                    scope.displayProperty.forEach(function(prop){
+                                        //var element = "<span><strong>";
+                                        var element = "<span>";
+                                        if(prop.prefix){
+                                            element = element + " " + prop.prefix ;
                                         }
-                                    }
 
-                                    if(prop.suffix){
-                                        element = element + " "  + prop.suffix;
-                                    }
+                                        if(prop.name){
 
-                                    //element  = element + "</strong></span>";
-                                    element  = element + "</span>";
+                                            if(item[prop.name]){
+                                                element = element + " " + item[prop.name];
+                                            }
+                                        }
 
-                                    parent = parent + element;
+                                        if(prop.suffix){
+                                            element = element + " "  + prop.suffix;
+                                        }
 
-                                });
-                            }
+                                        //element  = element + "</strong></span>";
+                                        element  = element + "</span>";
 
-                            return '<div class="row">' +
+                                        parent = parent + element;
+
+                                    });
+                                }
+
+                                return '<div class="row">' +
                                     (item[scope.searchProperty] ? '<span class="col-md-12" style="text-align: left" ><strong>' + escape(item[scope.searchProperty]) + '</strong></span>' : '') +
                                     (parent ? '<div class="col-md-12" style="text-align: left"><strong>' + parent + '</strong></div>' : '') +
-                                '</div>';  
-                                
-                        }
-                    },
-                    load: function(query, callback) {
-                        if (!query.length) return callback();
-                        //Add the where query..
-                        addWhereQuery(function(err){
-                            //Only run if no error found..
-                            if(!err){
-                                var that = this;
-                                //Now fetch data from the database.
-                                var dbService = Database.loadDb(scope.modelName);
-                                //Deep copying..
-                                var whereObj = $.extend(true, {}, scope.where);
-                                //Force convert object type in case of null..
-                                whereObj = whereObj ? whereObj: {};
-                                
-                                whereObj[scope.searchProperty] = {};
+                                    '</div>';
 
-                                whereObj[scope.searchProperty].like = query;
-
-
-                                dbService.find({
-                                    filter: {
-                                        limit: 10,
-                                        where: whereObj
-                                    }
-                                }, function(values, headers) {
-                                    callback(values);
-                                }, function(httpResp) {
-                                    console.log(httpResp);
-                                    callback();
-                                });
                             }
-                        });
-                                
-                    }, //load function..
-
-                    onItemRemove: function(value, $item){
-                        $timeout(function () {
-                            //clear the value..
-                            scope.value = "";
-                        }, 0);
-                    },
-
-                    onItemAdd: function(value, $item){
-                        var select = $(iElm).selectize();
-                        var selectize = select[0].selectize;
-                        //Add this value to the scope.
-                        var val = $.map(selectize.items, function(value) {
-                            return selectize.options[value];
-                        });
-                        $timeout(function () {
-                            //remove the order attribute of selectize..
-                            if(val[0].$order){
-                                delete val[0].$order;
+                        },
+                        options: options,
+                        load: function(query, callback) {
+                            if (!query.length) return callback();
+                            if(scope.init){
+                               return callback();
                             }
-                            scope.value = val[0];
+                            //Add the where query..
+                            addWhereQuery(function(err){
+                                //Only run if no error found..
+                                if(!err){
+                                    var that = this;
+                                    //Now fetch data from the database.
+                                    var dbService = Database.loadDb(scope.modelName);
+                                    //Deep copying..
+                                    var whereObj = $.extend(true, {}, scope.where);
+                                    //Force convert object type in case of null..
+                                    whereObj = whereObj ? whereObj: {};
 
-                            $timeout(function(){
-                                //Call the change functon..
-                                scope.onChange();
+                                    whereObj[scope.searchProperty] = {};
+
+                                    whereObj[scope.searchProperty].like = query;
+
+
+                                    dbService.find({
+                                        filter: {
+                                            limit: 10,
+                                            where: whereObj
+                                        }
+                                    }, function(values, headers) {
+                                        callback(values);
+                                    }, function(httpResp) {
+                                        console.log(httpResp);
+                                        callback();
+                                    });
+                                }
+                            });
+
+                        }, //load function..
+
+                        onItemRemove: function(value, $item){
+                            $timeout(function () {
+                                //clear the value..
+                                scope.value = "";
+                            }, 0);
+                        },
+
+                        onItemAdd: function(value, $item){
+                            var select = $(iElm).selectize();
+                            var selectize = select[0].selectize;
+                            //Add this value to the scope.
+                            var val = $.map(selectize.items, function(value) {
+                                return selectize.options[value];
+                            });
+                            $timeout(function () {
+                                //remove the order attribute of selectize..
+                                if(val[0].$order){
+                                    delete val[0].$order;
+                                }
+                                scope.value = val[0];
+
+                                $timeout(function(){
+                                    //Call the change functon..
+                                    scope.onChange();
+                                }, 0);
+
                             }, 0);
 
-                        }, 0);
+                        }
+                    }); //END OF Selectize function..
+                    return selectize_;
+                }; //loadSelectize
 
-                    }
-                }); //END OF Selectize function..
+
 
 
 
@@ -162,11 +171,11 @@ angular.module($snaphy.getModuleName())
                                 if(!value){
                                     if(scope.whereValidation){
                                         message = scope.whereValidation[key];
-                                        message = message ? message : "Validation error! Some required data need to be add first."; 
-                                        return notifyError(message, callback);   
+                                        message = message ? message : "Validation error! Some required data need to be add first.";
+                                        return notifyError(message, callback);
                                     }else{
                                         message = "Validation error! Some required data need to be add first.";
-                                        return notifyError(message, callback);   
+                                        return notifyError(message, callback);
                                     }
                                 }
                             }
@@ -186,7 +195,7 @@ angular.module($snaphy.getModuleName())
                         icon: 'fa fa-times',
                         align: 'left'
                     });
-                    
+
                     callback(new Error(message));
                 };
 
@@ -232,6 +241,42 @@ angular.module($snaphy.getModuleName())
                     }
 
                 });
+
+                //Init selectize
+                (function(){
+                    console.log(scope.init);
+                    if(scope.init){
+                        //Load all the data at once..
+                        //Add the where query..
+                        addWhereQuery(function(err){
+                            //Only run if no error found..
+                            if(!err){
+                                //Now fetch data from the database.
+                                var dbService = Database.loadDb(scope.modelName);
+                                //Deep copying..
+                                var whereObj = $.extend(true, {}, scope.where);
+                                //Force convert object type in case of null..
+                                whereObj = whereObj ? whereObj: {};
+                                dbService.find({
+                                    filter: {
+                                        where: whereObj
+                                    }
+                                }, function(values) {
+                                    if(values){
+                                        $(iElm).attr("placeholder", scope.placeholder);
+                                        loadSelectize(values);
+
+                                    }
+                                }, function(httpResp) {
+                                    console.error(httpResp);
+                                });
+                            }
+                        });
+                    }else{
+                        loadSelectize();
+                    }
+                })(); //Load Method
+
             } //LInk  function
         }; //END Return
     }])
