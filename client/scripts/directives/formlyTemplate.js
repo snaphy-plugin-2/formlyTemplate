@@ -37,6 +37,7 @@ angular.module($snaphy.getModuleName())
 
                 var loadSelectize = function(options){
                     options = options || [];
+                    console.log(options);
                     //Load selectize now..
                     var selectize_ = $(iElm).selectize({
                         maxItems: 1,
@@ -242,9 +243,8 @@ angular.module($snaphy.getModuleName())
 
                 });
 
-                //Init selectize
+                //Init selectize..
                 (function(){
-                    console.log(scope.init);
                     if(scope.init){
                         //Load all the data at once..
                         //Add the where query..
@@ -265,7 +265,6 @@ angular.module($snaphy.getModuleName())
                                     if(values){
                                         $(iElm).attr("placeholder", scope.placeholder);
                                         loadSelectize(values);
-
                                     }
                                 }, function(httpResp) {
                                     console.error(httpResp);
