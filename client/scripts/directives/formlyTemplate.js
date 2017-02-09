@@ -494,7 +494,36 @@ angular.module($snaphy.getModuleName())
 
             } //LInk  function
         }; //END Return
+    }])
+
+
+
+    .directive('snaphyRaLoadDate', ['$timeout', function($timeout) {
+        return {
+            restrict: 'A',
+            scope: {
+                options: "=?options"
+            },
+            link: function(scope, element) {
+                $timeout(function() {
+                    $(function() {
+                        scope.options = scope.options || {
+                                weekStart: 1,
+                                autoclose: true,
+                                todayHighlight: true
+                            };
+                        // Init page helpers (BS Datepicker + BS Colorpicker + Select2 + Masked Input + Tags Inputs plugins)
+                        //App.initHelpers(['datepicker']);
+                        //scope.initializePlugin(['datepicker']);
+                        // Init datepicker (with .js-datepicker and .input-daterange class)
+                        jQuery(element).add('.input-daterange').datepicker(scope.options);
+                    });
+                }); //timeout method..
+            } //End of Link function...
+        }; // End of return
     }]);
+
+
 
 
 
