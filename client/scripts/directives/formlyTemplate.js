@@ -502,7 +502,9 @@ angular.module($snaphy.getModuleName())
         return {
             restrict: 'A',
             scope: {
-                options: "=?options"
+                options: "=?options",
+                //array with callback method..see below
+                setDates: "&setDates"
             },
             link: function(scope, element) {
                 $timeout(function() {
@@ -512,11 +514,14 @@ angular.module($snaphy.getModuleName())
                                 autoclose: true,
                                 todayHighlight: true
                             };
-                        // Init page helpers (BS Datepicker + BS Colorpicker + Select2 + Masked Input + Tags Inputs plugins)
-                        //App.initHelpers(['datepicker']);
-                        //scope.initializePlugin(['datepicker']);
                         // Init datepicker (with .js-datepicker and .input-daterange class)
                         jQuery(element).add('.input-daterange').datepicker(scope.options);
+                        var dateMethod = scope.setDates();
+                        if(dateMethod){
+                            dateMethod(function(dates){
+                                $(element).datepicker('setDates', dates);
+                            });
+                        }
                     });
                 }); //timeout method..
             } //End of Link function...
