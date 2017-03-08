@@ -86,7 +86,12 @@ angular.module($snaphy.getModuleName())
                                             $scope.to.where[whereKey] = mainModelObj;
 
                                         }else{
-                                            if(relationName && relationKey){
+                                            if($scope.model[whereKey]){
+                                                $timeout(function() {
+                                                    $scope.to.where[whereKey] = $scope.model[whereKey];
+                                                }, 0);
+                                            }
+                                            else if(relationName && relationKey){
                                                 if($scope.model[relationName]){
                                                     if($scope.model[relationName][relationKey]){
                                                         $timeout(function() {

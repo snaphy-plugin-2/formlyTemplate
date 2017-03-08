@@ -90,7 +90,7 @@ angular.module($snaphy.getModuleName())
                                 return callback();
                             }
                             //Add the where query..
-                            addWhereQuery(function(err){
+                            addWhereQuery(false, function(err){
                                 //Only run if no error found..
                                 if(!err){
                                     var that = this;
@@ -100,7 +100,6 @@ angular.module($snaphy.getModuleName())
                                     var whereObj = $.extend(true, {}, scope.where);
                                     //Force convert object type in case of null..
                                     whereObj = whereObj ? whereObj: {};
-
                                     whereObj[scope.searchProperty] = {};
 
                                     whereObj[scope.searchProperty].like = query;
@@ -155,10 +154,13 @@ angular.module($snaphy.getModuleName())
                 }; //loadSelectize
 
 
-
-
-
-                var addWhereQuery = function(callback){
+                /**
+                 * Addd where query dynamically..
+                 * @param silent {Boolean}
+                 * @param callback
+                 * @returns {*}
+                 */
+                var addWhereQuery = function(silent, callback){
                     var message = "";
                     //If where query is present..
                     if(scope.where){
@@ -169,21 +171,31 @@ angular.module($snaphy.getModuleName())
                                     if(scope.whereValidation){
                                         message = scope.whereValidation[key];
                                         message = message ? message : "Validation error! Some required data need to be add first.";
-                                        return notifyError(message, callback);
+                                        if(!silent){
+                                            notifyError(message);
+                                        }
+                                        break;
                                     }else{
                                         message = "Validation error! Some required data need to be add first.";
-                                        return notifyError(message, callback);
+                                        if(!silent){
+                                            notifyError(message);
+                                        }
+                                        break;
                                     }
                                 }
                             }
                         }
                     }
-                    //All is well. Just call the callback..
-                    return callback(null);
+
+                    if(message){
+                        callback(new Error(message));
+                    }else{
+                        return callback(null);
+                    }
                 };
 
 
-                var notifyError = function(message, callback){
+                var notifyError = function(message){
                     //Show the validation message..
                     /*Delete the data from the database..*/
                     SnaphyTemplate.notify({
@@ -192,8 +204,6 @@ angular.module($snaphy.getModuleName())
                         icon: 'fa fa-times',
                         align: 'left'
                     });
-
-                    callback(new Error(message));
                 };
 
 
@@ -234,23 +244,29 @@ angular.module($snaphy.getModuleName())
                             var select = $(iElm).selectize();
                             var selectize = select[0].selectize;
                             selectize.clear();
+                            selectize.clearOptions();
+                            selectize.refreshItems();
+                            selectize.clearCache();
                         }, 0);
                     }
 
                 });
 
-                //Init selectize..
-                (function(){
-                    //Load selectize..
-                    loadSelectize();
 
+
+                //Load Data in Advance..
+                /**
+                 * Load data in advance
+                 * @param silent {boolean} If silent is true will not throw any error message.
+                 */
+                var loadDataInAdvance = function(silent){
                     if(scope.load){
                         //Load all the data at once..
                         //Add the where query..
-                        addWhereQuery(function(err){
+                        addWhereQuery(silent, function(err){
                             //Only run if no error found..
                             if(!err){
-                                //Now fetch data from the database.
+                                //Now fetch data from the database..
                                 var dbService = Database.loadDb(scope.modelName);
                                 //Deep copying..
                                 var whereObj = $.extend(true, {}, scope.where);
@@ -268,6 +284,7 @@ angular.module($snaphy.getModuleName())
                                         options.forEach(function(option){
                                             selectize.addOption(option);
                                         });
+
                                     }
                                 }, function(httpResp) {
                                     console.error(httpResp);
@@ -275,7 +292,35 @@ angular.module($snaphy.getModuleName())
                             }
                         });
                     }
+                }; //LoadDataInAdvance....
+
+
+                var clearDataValues = function () {
+                    var select = $(iElm).selectize();
+                    var selectize = select[0].selectize;
+                    //Clear selectize previous values
+                    selectize.clear(true);
+                    selectize.clearOptions();
+                    selectize.refreshItems();
+                    selectize.clearCache();
+                };
+
+                //Init selectize..
+                (function(){
+                    //Load selectize..
+                    loadSelectize();
+                    //loadDataInAdvance(true);
+
                 })(); //Load Method
+
+                //Load data in advance if load is true and where query changes dynamically.
+               /* scope.$watch('where', function() {
+                    if (!$.isEmptyObject(scope.where)) {
+                        loadDataInAdvance(true);
+                    }
+                }, true);*/
+
+
 
             } //LInk  function
         }; //END Return
