@@ -531,5 +531,34 @@ angular.module($snaphy.getModuleName())
 
             } //LInk  function
         }; //END Return
+    }])
+
+
+    .directive('snaphyRaLoadDate', ['$timeout', function ($timeout) {
+        return{
+            restrict: 'A',
+            scope:{
+                options: "=?options",
+                //array with callback mathod..see below..
+                setDates: "&setDates"
+            },
+            link: function (scope, element) {
+                $timeout(function () {
+                   scope.options = scope.options || {
+                        weekStart: 1,
+                        autoclose: true,
+                        todayHighlight: true
+                   };
+
+                   $(element).add('.input-daterange').datepicker(scope.options);
+                    var dateMethod = scope.setDates();
+                    if(dateMethod){
+                        dateMethod(function (dates) {
+                            $(element).datepicker('setDates', dates);
+                        });
+                    }
+                });
+            }//end of link function..
+        };
     }]);
 
