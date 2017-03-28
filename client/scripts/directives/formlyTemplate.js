@@ -540,7 +540,8 @@ angular.module($snaphy.getModuleName())
             scope:{
                 options: "=?options",
                 //array with callback mathod..see below..
-                setDates: "&setDates"
+                setDates: "&setDates",
+                defaultMonth: "&defaultMonth"
             },
             link: function (scope, element) {
                 $timeout(function () {
@@ -550,7 +551,18 @@ angular.module($snaphy.getModuleName())
                         todayHighlight: true
                    };
 
-                   $(element).add('.input-daterange').datepicker(scope.options);
+                   var options = angular.copy(scope.options);
+                   var defaultDate = scope.defaultMonth();
+
+                   if(defaultDate){
+                       /*defaultViewDate: {
+                           year: 2016,
+                               month: 2
+                       }*/
+
+                       options.defaultViewDate = defaultDate;
+                   }
+                   $(element).add('.input-daterange').datepicker(options);
                     var dateMethod = scope.setDates();
                     if(dateMethod){
                         dateMethod(function (dates) {
