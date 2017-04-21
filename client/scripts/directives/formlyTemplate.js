@@ -531,5 +531,87 @@ angular.module($snaphy.getModuleName())
 
             } //LInk  function
         }; //END Return
+    }])
+
+
+    .directive('snaphyRaLoadDate', ['$timeout', "$rootScope", function ($timeout, $rootScope) {
+        return{
+            restrict: 'A',
+            scope:{
+                options: "=?options",
+                //array with callback mathod..see below..
+                setDates: "&setDates",
+                defaultMonth: "&defaultMonth"
+            },
+            link: function (scope, element) {
+                var newDateList = [];
+                $timeout(function () {
+                   scope.options = scope.options || {
+                        weekStart: 1,
+                        autoclose: true,
+                        todayHighlight: true
+                   };
+
+                   var options = angular.copy(scope.options);
+                   var defaultDate = scope.defaultMonth();
+
+                   $(element).add('.input-daterange').datepicker(options);
+                    var dateMethod = scope.setDates();
+                    if(dateMethod){
+                        dateMethod(function (dates) {
+                            if(dates){
+                                //New date clear list..
+                                newDateList.length = 0;
+                                dates.forEach(function (date) {
+                                    var newDate = moment().month(defaultDate.month).set('date', date).format("DD/MM/YYYY");
+                                    newDateList.push(newDate);
+                                });
+                                $(element).datepicker('setDates', newDateList);
+                            }else{
+                                 $(element).datepicker("setStartDate", moment().month(defaultDate.month).startOf("month").toDate());
+                                 $(element).datepicker("setEndDate", moment().month(defaultDate.month).endOf("month").toDate());
+
+                            }
+
+                        });
+                    }
+                });
+
+                $rootScope.$on("invoiceTabsChanged", function(event, options) {
+                    $timeout(function () {
+                        scope.options = scope.options || {
+                                weekStart: 1,
+                                autoclose: true,
+                                todayHighlight: true
+                            };
+
+                        var options = angular.copy(scope.options);
+                        var defaultDate = scope.defaultMonth();
+
+                        $(element).add('.input-daterange').datepicker(options);
+                        var dateMethod = scope.setDates();
+                        if(dateMethod){
+                            dateMethod(function (dates) {
+                                if(dates){
+                                    //New date clear list..
+                                    newDateList.length = 0;
+                                    dates.forEach(function (date) {
+                                        var newDate = moment().month(defaultDate.month).set('date', date).format("DD/MM/YYYY");
+                                        newDateList.push(newDate);
+                                    });
+                                    $(element).datepicker('setDates', newDateList);
+                                }else{
+                                    $(element).datepicker("setStartDate", moment().month(defaultDate.month).startOf("month").toDate());
+                                    $(element).datepicker("setEndDate", moment().month(defaultDate.month).endOf("month").toDate());
+
+                                }
+
+                            });
+                        }
+                    });
+                });
+
+            }//end of link function..
+        };
     }]);
 
