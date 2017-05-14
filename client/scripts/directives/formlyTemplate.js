@@ -535,6 +535,7 @@ angular.module($snaphy.getModuleName())
 
 
 
+
 	/**
      * Directive for controlling date..
 	 */
@@ -607,14 +608,11 @@ angular.module($snaphy.getModuleName())
                                 }else{
                                     $(element).datepicker("setStartDate", moment().month(defaultDate.month).startOf("month").toDate());
                                     $(element).datepicker("setEndDate", moment().month(defaultDate.month).endOf("month").toDate());
-
                                 }
-
                             });
                         }
                     });
                 });
-
             }//end of link function..
         };
     }]);
