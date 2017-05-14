@@ -534,8 +534,12 @@ angular.module($snaphy.getModuleName())
     }])
 
 
-    .directive('snaphyRaLoadDate', ['$timeout', "$rootScope", function ($timeout, $rootScope) {
-        return{
+
+	/**
+     * Directive for controlling date..
+	 */
+	.directive('snaphyRaLoadDate', ['$timeout', "$rootScope", function ($timeout, $rootScope) {
+        return {
             restrict: 'A',
             scope:{
                 options: "=?options",
