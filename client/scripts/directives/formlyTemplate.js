@@ -547,58 +547,73 @@ angular.module($snaphy.getModuleName())
                 setDates: "&setDates",
                 defaultMonth: "&defaultMonth"
             },
-            link: function (scope, element, attr) {
-                //var elem = $("#" + attr.id);
-                scope.options = scope.options || {
-                        weekStart: 1,
-                        autoclose: true,
-                        todayHighlight: false,
-                        format: 'dd/mm/yyyy'
-                    };
+            link: function (scope, element) {
+                var newDateList = [];
+                $timeout(function () {
+                    scope.options = scope.options || {
+                            weekStart: 1,
+                            autoclose: true,
+                            todayHighlight: true
+                        };
 
-                var options = angular.copy(scope.options);
-                //load the datepicker
-                $(element).add('.input-daterange').datepicker(options);
-
-                //Load the date to bootstrap-datepicker.....
-                var loadDate = function(scope, element){
-
-                    var newDateList = [];
-
+                    var options = angular.copy(scope.options);
                     var defaultDate = scope.defaultMonth();
-                    var dateMethod = scope.setDates();
-                    //Clear the dates..
-                    $(element).datepicker("clearDates");
-                    $(element).datepicker("setStartDate", moment().month(defaultDate.month).startOf("month").toDate());
-                    $(element).datepicker("setEndDate", moment().month(defaultDate.month).endOf("month").toDate());
 
+                    $(element).add('.input-daterange').datepicker(options);
+                    var dateMethod = scope.setDates();
                     if(dateMethod){
                         dateMethod(function (dates) {
                             if(dates){
                                 //New date clear list..
+                                newDateList.length = 0;
                                 dates.forEach(function (date) {
                                     var newDate = moment().month(defaultDate.month).set('date', date).format("DD/MM/YYYY");
                                     newDateList.push(newDate);
                                 });
-
                                 $(element).datepicker('setDates', newDateList);
-
                             }else{
                                 $(element).datepicker("setStartDate", moment().month(defaultDate.month).startOf("month").toDate());
                                 $(element).datepicker("setEndDate", moment().month(defaultDate.month).endOf("month").toDate());
+
                             }
+
                         });
                     }
-                }; //Load Date
+                });
 
+                $rootScope.$on("invoiceTabsChanged", function(event, options) {
+                    $timeout(function () {
+                        scope.options = scope.options || {
+                                weekStart: 1,
+                                autoclose: true,
+                                todayHighlight: true
+                            };
 
-                //load date..
-                loadDate(scope, element);
+                        var options = angular.copy(scope.options);
+                        var defaultDate = scope.defaultMonth();
 
+                        $(element).add('.input-daterange').datepicker(options);
+                        var dateMethod = scope.setDates();
+                        if(dateMethod){
+                            dateMethod(function (dates) {
+                                if(dates){
+                                    //New date clear list..
+                                    newDateList.length = 0;
+                                    dates.forEach(function (date) {
+                                        var newDate = moment().month(defaultDate.month).set('date', date).format("DD/MM/YYYY");
+                                        newDateList.push(newDate);
+                                    });
+                                    $(element).datepicker('setDates', newDateList);
+                                }else{
+                                    $(element).datepicker("setStartDate", moment().month(defaultDate.month).startOf("month").toDate());
+                                    $(element).datepicker("setEndDate", moment().month(defaultDate.month).endOf("month").toDate());
+                                }
+                            });
+                        }
+                    });
+                });
             }//end of link function..
         };
     }]);
-
-
 
 
