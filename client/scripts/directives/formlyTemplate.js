@@ -534,8 +534,12 @@ angular.module($snaphy.getModuleName())
     }])
 
 
+
+    /**
+     * Directive for controlling date..
+     */
     .directive('snaphyRaLoadDate', ['$timeout', "$rootScope", function ($timeout, $rootScope) {
-        return{
+        return {
             restrict: 'A',
             scope:{
                 options: "=?options",
@@ -546,16 +550,16 @@ angular.module($snaphy.getModuleName())
             link: function (scope, element) {
                 var newDateList = [];
                 $timeout(function () {
-                   scope.options = scope.options || {
-                        weekStart: 1,
-                        autoclose: true,
-                        todayHighlight: true
-                   };
+                    scope.options = scope.options || {
+                            weekStart: 1,
+                            autoclose: true,
+                            todayHighlight: true
+                        };
 
-                   var options = angular.copy(scope.options);
-                   var defaultDate = scope.defaultMonth();
+                    var options = angular.copy(scope.options);
+                    var defaultDate = scope.defaultMonth();
 
-                   $(element).add('.input-daterange').datepicker(options);
+                    $(element).add('.input-daterange').datepicker(options);
                     var dateMethod = scope.setDates();
                     if(dateMethod){
                         dateMethod(function (dates) {
@@ -568,8 +572,8 @@ angular.module($snaphy.getModuleName())
                                 });
                                 $(element).datepicker('setDates', newDateList);
                             }else{
-                                 $(element).datepicker("setStartDate", moment().month(defaultDate.month).startOf("month").toDate());
-                                 $(element).datepicker("setEndDate", moment().month(defaultDate.month).endOf("month").toDate());
+                                $(element).datepicker("setStartDate", moment().month(defaultDate.month).startOf("month").toDate());
+                                $(element).datepicker("setEndDate", moment().month(defaultDate.month).endOf("month").toDate());
 
                             }
 
@@ -603,15 +607,13 @@ angular.module($snaphy.getModuleName())
                                 }else{
                                     $(element).datepicker("setStartDate", moment().month(defaultDate.month).startOf("month").toDate());
                                     $(element).datepicker("setEndDate", moment().month(defaultDate.month).endOf("month").toDate());
-
                                 }
-
                             });
                         }
                     });
                 });
-
             }//end of link function..
         };
     }]);
+
 
