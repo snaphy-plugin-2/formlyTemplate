@@ -1,4 +1,4 @@
-<div style="margin: 0;" class="form-group">
+<div style="margin: 0; width: auto; height: 200px;"  class="form-group">
     <!-- <form  name="form"> -->
         <button
             style="width:100%"
@@ -30,7 +30,7 @@
         <!-- Image Zoom In -->
         <div ng-if="checkData()" class="row items-push">
             <div class="col-lg-12 animated fadeIn" >
-                <div ng-if="!loadFromServer(file)" class="img-container fx-img-zoom-in">
+                <div ng-if="!loadFromServer(file)" class="img-container fx-img-zoom-in" style="background-color: #eeeeee;">
                     <img ngf-src="file" class="img-responsive photoFrame" ng-class="{'imageStyle': !to.fullWidth}"   alt="">
                     <div class="img-options">
                         <div class="img-options-content">
@@ -38,7 +38,7 @@
                         </div>
                     </div>
                 </div>
-                <div ng-if="loadFromServer(file) && file" class="img-container fx-img-zoom-in photoFrame">
+                <div ng-if="loadFromServer(file) && file" class="img-container fx-img-zoom-in photoFrame" style="background-color: #eeeeee;">
                     <img ngf-src="loadUrl(file)" class="img-responsive" ng-class="{'imageStyle': !to.fullWidth}"  alt="">
                     <div class="img-options">
                         <div class="img-options-content">
