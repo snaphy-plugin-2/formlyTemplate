@@ -103,7 +103,8 @@ angular.module($snaphy.getModuleName())
                                     whereObj[scope.searchProperty] = {};
 
                                     whereObj[scope.searchProperty].like = query;
-
+                                    //Make search case in-sensetive..
+                                    whereObj[scope.searchProperty].options = "i";
 
                                     dbService.find({
                                         filter: {
