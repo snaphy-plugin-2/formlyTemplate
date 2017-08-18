@@ -1416,16 +1416,41 @@ angular.module($snaphy.getModuleName())
         name: 'date',
         templateUrl:'/formlyTemplate/views/date.html',
         link: function(scope, elem, attrs){
-            App.initHelpers(['datepicker']);
-
             var getRandom = function(){
                 return Math.floor((Math.random()*6)+1);
             };
 
+            scope.to.id           = scope.to.id || "date_" + getRandom();
+            scope.to.placeholder  = scope.to.placeholder || "Enter date";
+            scope.to.colSize     = scope.to.colSize || 'col-md-12';
 
-            scope.to.format = scope.to.format || "mm/dd/yyyy";
-            scope.to.id = scope.to.id || "date_" + getRandom();
-            scope.to.placeholder = scope.to.placeholder || "Enter date";
+            //Load Date..
+            var loadDate = function (date) {
+                scope.to.format = scope.to.format || "dd/mm/yyyy";
+                var format = {
+                    weekStart: 1,
+                    autoclose: true,
+                    todayHighlight: false,
+                    format: scope.to.format
+                };
+
+                var element = $($(elem).find('input'))[0];
+                //load the datepicker
+                $(element).datepicker(format);
+                if(date){
+                    var dateObj = new Date(date);
+                    $(element).datepicker('setDate', dateObj);
+
+                }
+            };
+            
+            scope.$watch('model', function () {
+                if(scope.model[scope.options.key]){
+                    loadDate(scope.model[scope.options.key]);
+                }else{
+                    loadDate();
+                }
+            });
 
         }
     });

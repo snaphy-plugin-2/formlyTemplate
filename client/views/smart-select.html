@@ -1,0 +1,22 @@
+<div ng-class="{'form-group': !options.templateOptions.inline, 'inline-elements': options.templateOptions.inline}" >
+  <div  ng-class="[options.templateOptions.colSize, options.templateOptions.color]">
+      <div  class="form-material" ng-class="options.templateOptions.color">
+          <select
+                class="form-control"
+                ng-change="onChange(model[to.foreignKey])"
+                ng-disabled="to.readOnly"
+                ng-model="model[to.foreignKey]"
+                style="width: 100%;"
+                data-placeholder="Choose one.."
+                name="{{id}}"
+                id="{{id}}"
+                type="{{options.templateOptions.type}}"
+                ng-class="options.templateOptions.class">
+            <option ng-repeat="item in optionsList" value="{{item.id}}">
+              {{item[to.searchProp]}}
+            </option>
+          </select>
+          <label for="{{id}}">{{label}}</label>
+      </div>
+  </div>
+</div>
