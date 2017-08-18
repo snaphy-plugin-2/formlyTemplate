@@ -102,9 +102,11 @@
                         //Unsubscribe
                         //loadListener();
                         if(args.where){
-                            loadData(args.where);
+                            var where = getWhere(args.where);
+                            loadData(where);
                         }else{
-                            loadData({});
+                            var where = getWhere({});
+                            loadData(where);
                         }
                     });
 
@@ -114,6 +116,19 @@
                         loadListener();
                     });
                 }
+            };
+
+              //Get Where Value of Object..
+            var getWhere = function(where){
+                where = where || {};
+                if($scope.to.filter){
+                    if($scope.to.filter.where){
+                        for(var key in $scope.to.filter.where){
+                            where[key] = $scope.to.filter.where[key];
+                        }
+                    }
+                }
+                return where;
             };
 
             if($scope.to.loadWhen){
