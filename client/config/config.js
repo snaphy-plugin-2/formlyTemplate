@@ -124,7 +124,9 @@
                 if($scope.to.filter){
                     if($scope.to.filter.where){
                         for(var key in $scope.to.filter.where){
-                            where[key] = $scope.to.filter.where[key];
+                            if($scope.to.filter.where.hasOwnProperty(key)) {
+                                where[key] = $scope.to.filter.where[key];
+                            }
                         }
                     }
                 }
