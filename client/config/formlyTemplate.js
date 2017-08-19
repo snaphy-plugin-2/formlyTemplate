@@ -1427,10 +1427,10 @@ angular.module($snaphy.getModuleName())
             //Load Date..
             var loadDate = function (date) {
                 scope.to.format = scope.to.format || "dd/mm/yyyy";
-                var format = {
+                var format  = scope.to.options ||  {
                     weekStart: 1,
                     autoclose: true,
-                    todayHighlight: false,
+                    todayHighlight: true,
                     format: scope.to.format
                 };
 
@@ -1440,9 +1440,21 @@ angular.module($snaphy.getModuleName())
                 if(date){
                     var dateObj = new Date(date);
                     $(element).datepicker('setDate', dateObj);
-
                 }
             };
+
+
+            scope.onChange = function(date){
+                console.log("Date getting changed.", date);
+                if(date){
+                    //Convert dd/mm/yyyy to DD/MM/YYYY
+                    var newFormat = scope.to.format.replace(/d/g, "D").replace(/m/g, "M").replace(/y/g, "Y");
+                    scope.model[scope.options.key] = moment(date, newFormat).toDate();
+                }else{
+                    scope.model[scope.options.key] = undefined;
+                }
+            };
+
             
             scope.$watch('model', function () {
                 if(scope.model[scope.options.key]){
