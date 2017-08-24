@@ -136,7 +136,8 @@
             if($scope.to.loadWhen){
                 loadWhen();
             }else{
-                loadData({});
+                var where = getWhere({});
+                loadData(where);
             }
 
         }] //Controller..
