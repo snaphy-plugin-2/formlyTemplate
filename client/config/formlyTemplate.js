@@ -1445,11 +1445,16 @@ angular.module($snaphy.getModuleName())
 
 
             scope.onChange = function(date){
-                console.log("Date getting changed.", date);
+                //console.log("Date getting changed.", date);
                 if(date){
                     //Convert dd/mm/yyyy to DD/MM/YYYY
                     var newFormat = scope.to.format.replace(/d/g, "D").replace(/m/g, "M").replace(/y/g, "Y");
-                    scope.model[scope.options.key] = moment(date, newFormat).toDate();
+                    if(scope.to.utc){
+                        scope.model[scope.options.key] = moment.utc(date, newFormat).toDate();
+                    }else{
+                        scope.model[scope.options.key] = moment(date, newFormat).toDate();
+                    }
+
                 }else{
                     scope.model[scope.options.key] = undefined;
                 }
