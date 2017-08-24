@@ -55,18 +55,22 @@
 
             //Watch the model..and add items dynamically..
             $scope.$watch('model', function(){
-                var targetItem = $scope.model[$scope.to.key];
-                if(targetItem){
-                    if($scope.optionsList){
-                        if(!$scope.optionsList.length){
-                            $scope.optionsList.push(targetItem);
-                        }
-                        if(!$scope.model[$scope.to.foreignKey]){
-                            $scope.model[$scope.to.foreignKey] = targetItem.id;
+                if($scope.model){
+                    var targetItem = $scope.model[$scope.to.key];
+                    if(targetItem){
+                        if($scope.optionsList){
+                            if(!$scope.optionsList.length){
+                                $scope.optionsList.push(targetItem);
+                            }
+                            if(!$scope.model[$scope.to.foreignKey]){
+                                $scope.model[$scope.to.foreignKey] = targetItem.id;
+                            }
                         }
                     }
                 }
             });
+
+
 
             //Load data from database..
             var loadData = function(where){
