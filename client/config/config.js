@@ -6,11 +6,58 @@
   /* global angular, $snaphy */
 
   angular.module($snaphy.getModuleName())
+
+    
+
     /**
      Defigning custom templates for angular-formly.
      */
     .run(['formlyConfig', '$timeout', 'Database',
       function(formlyConfig, $timeout, Database) {
+
+        formlyConfig.setType({
+            name: 'htmlText',
+            template: '<div ng-class="{\'form-group\': !options.templateOptions.inline, \'inline-elements\': options.templateOptions.inline}">' +
+            '<div ng-class="options.templateOptions.colSize">' +
+            '<div class="form-material" ng-class="options.templateOptions.color">' +
+            '<textarea snaphy-ck-editor type="{{options.templateOptions.type}}" name="{{options.templateOptions.id}}" id="{{options.templateOptions.id}}" ng-class="options.templateOptions.class" class="form-control input-box" ng-model="model[options.key]" rows="{{options.templateOptions.row}}"></textarea>' +
+            '<label for="{{options.templateOptions.id}}">{{options.templateOptions.label}}</label>' +
+            '</div>' +
+            '</div>' +
+            '</div>',
+            link: function($scope, el, attrs) {
+                var randomId = Math.floor(100000000 + Math.random() * 900000000);
+                $scope.options.templateOptions.id = $scope.options.templateOptions.id || "";
+                $scope.options.templateOptions.id = $scope.options.templateOptions.id + "_" + randomId.toString();
+            },
+            controller: ["$scope", function ($scope) {
+                var getInstance = function(){
+                    return CKEDITOR.instances[$scope.options.templateOptions.id];
+                };
+
+                $timeout(function () {
+                    //Listen to onchange value..
+                    if(getInstance()){
+                        getInstance().on('change', function() {
+                            var htmlValue = getInstance().getData();
+                            $scope.model[$scope.options.key] = "<html><body>"+htmlValue+"</body></html>";
+                        });
+                    }
+
+
+                    //Set default value for label..
+                    if ($scope.options.templateOptions.row === undefined) {
+                        $scope.options.templateOptions.row = 3;
+                    }
+
+                    if ($scope.options.templateOptions.colSize === undefined) {
+                        $scope.options.templateOptions.colSize = "col-sm-12";
+                    }
+                }, 200);
+            }]
+        });
+
+
         formlyConfig.setType({
           name: 'smartSelect',
           templateUrl: '/formlyTemplate/views/smart-select.html',
