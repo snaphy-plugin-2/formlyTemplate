@@ -118,13 +118,15 @@
             });
 
 
+            var order = $scope.to.searchProperty? $scope.to.searchProperty + " ASC": undefined;
 
             //Load data from database..
             var loadData = function(where){
                 dbService.find({
                   filter: {
                     limit: 500,
-                    where: where || {}
+                    where: where || {},
+                    order: order
                   }
                 }, function(values) {
                     $scope.optionsList.length = 0;
