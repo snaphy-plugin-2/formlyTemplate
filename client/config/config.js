@@ -118,7 +118,7 @@
             });
 
 
-            var order = $scope.to.searchProperty? $scope.to.searchProperty + " ASC": undefined;
+            var order = $scope.to.searchProp? $scope.to.searchProp + " ASC": undefined;
 
             //Load data from database..
             var loadData = function(where){
