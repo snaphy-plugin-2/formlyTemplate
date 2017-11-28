@@ -123,7 +123,7 @@
             var loadData = function(where){
                 dbService.find({
                   filter: {
-                    limit: 100,
+                    limit: 500,
                     where: where || {}
                   }
                 }, function(values) {
