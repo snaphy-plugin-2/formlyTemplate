@@ -45,6 +45,12 @@
                     }
 
 
+                    if(getInstance()){
+                        $scope.$watch('model[options.key]', function(){
+                            getInstance().setData($scope.model[$scope.options.key]);
+                        });
+                    }
+
                     //Set default value for label..
                     if ($scope.options.templateOptions.row === undefined) {
                         $scope.options.templateOptions.row = 3;
