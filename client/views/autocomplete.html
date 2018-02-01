@@ -1,15 +1,15 @@
-<div ng-if="display" class="relatedData">
-    <div class="row">
+<div ng-if="display" >
+    <!-- <div class="row">
         <strong  class="col-xs-12 col-md-12 showRelatedData"><small><a ng-click="toggleShow()">{{showOrHide()}} related data</a></small></strong>
-    </div>
+    </div> -->
     <!-- <hr style="border-color:#ddd;"> -->
-    <strong style="margin-left:2px; margin-top:3px;"><small>Add {{to.btnText}}</small></strong>
-    <div ng-if="!hide" style="margin-top:10px;">
-        <div class="row" ng-if="!showCreate()"  style="text-align:center">
-            <div ng-if="showSearch()" class="col-md-9 col-xs-12 cleanBtnCornerRight">
+    <!-- <strong style="margin-left:2px; margin-top:3px;"><small>Add {{to.btnText}}</small></strong> -->
+    <div ng-if="!hide">
+        <div ng-if="!showCreate()"  style="text-align:center">
+            <div ng-if="showSearch()" class=" cleanBtnCornerRight">
                 <div class="form-group">
                     <div ng-class="options.templateOptions.colSize">
-                        <div style="margin-left: 10px;" class="form-material" ng-class="options.templateOptions.color">
+                        <div  class="form-material" ng-class="options.templateOptions.color">
 
                             <autocomplete
                                     ng-if="options.templateOptions.id"

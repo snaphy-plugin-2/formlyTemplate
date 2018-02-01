@@ -9,7 +9,8 @@
     "/static/bower_components/selectize/dist/js/standalone/selectize.min.js": "selectize",
     "/formlyTemplate/config/formlyTemplate.js": "formlyTemplateAllConfig",
     "/formlyTemplate/config/config.js": "formlyTemplateConfig",
-    "/static/bower_components/ng-file-upload-shim/ng-file-upload-shim.min.js": "ng-file-upload-shim"
+    "/static/bower_components/ng-file-upload-shim/ng-file-upload-shim.min.js": "ng-file-upload-shim",
+    "/formlyTemplate/library/ckeditor/ckeditor.js": "ckEditor"
   },
   "moduleDependencies": {
     "/static/bower_components/ng-file-upload/ng-file-upload.min.js": "ngFileUpload"
