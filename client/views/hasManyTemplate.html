@@ -1,10 +1,10 @@
-<div class="relatedData">
+<div>
     <!--ADDING A REPEATER FOR THE TEMPLATE SECTION-->
     <!--http://angular-formly.com/#/example/advanced/repeating-section-->
     <!-- <hr style="margin-top:10px; border-color:#ddd;"> -->
-    <div class="row">
+    <!-- <div class="row">
         <strong  class="col-xs-12 col-md-12 showRelatedData"><small><a ng-click="toggleShow()">{{showOrHide()}} related data</a></small></strong>
-    </div>
+    </div> -->
     <div>
         <div class="row">
             <strong style="margin-left:2px;" class="col-xs-12 col-md-12">
@@ -12,12 +12,12 @@
                 <small ng-if="!to.label">Add {{to.model}}</small>
             </strong>
         </div>
-        <div ng-if="!hide" style="margin-top:10px;">
-            <div class="row">
-                <div ng-if="showSearch()" class="col-md-9 col-xs-12">
-                    <div class="form-group">
+        <div ng-if="!hide">
+            <div >
+                <div ng-if="showSearch()" >
+                    <div>
                         <div >
-                            <div style="margin-left: 10px;" class="form-material">
+                            <div class="form-material">
                                 <multi-search ng-if="to.id"
                                         placeholder="{{placeholder}}"
                                         model-name="{{to.model}}"
