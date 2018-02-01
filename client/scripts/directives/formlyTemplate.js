@@ -3,6 +3,28 @@
 /*global $, jQuery, $snaphy, angular*/
 angular.module($snaphy.getModuleName())
 
+    .directive('snaphyCkEditor', ['$timeout', function($timeout) {
+        return {
+            restrict: 'A',
+            link: function(scope, iElement, iAttrs) {
+
+                scope.$parent.getHtmlData = function(){
+                    return CKEDITOR.instances[iAttrs.id].getData();
+                };
+
+                //console.log(scope);
+
+                $timeout(function(){
+                    CKEDITOR.disableAutoInline = true;
+                    CKEDITOR.replace(iAttrs.id);
+
+                }); //timeout method..
+
+            } //End of Link function...
+        }; // End of return
+    }])
+
+    
     //Autocomplete for selectize search..
     .directive('autocomplete', ['Database', '$timeout', 'SnaphyTemplate', function(Database, $timeout, SnaphyTemplate) {
         // Runs during compile
