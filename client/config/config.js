@@ -35,7 +35,9 @@
                     return CKEDITOR.instances[$scope.options.templateOptions.id];
                 };
 
+
                 $timeout(function () {
+                    console.log(getInstance());
                     //Listen to onchange value..
                     if(getInstance()){
                         getInstance().on('change', function() {
