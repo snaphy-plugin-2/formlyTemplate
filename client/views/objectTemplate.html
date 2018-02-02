@@ -1,6 +1,7 @@
 <!-- <hr style="border-color:#ddd;"> -->
-<div>
+<div ng-style="to.parentStyle">
     <div style="display: none">{{model[options.key]}}</div>
+    <div ng-style="to.style" ng-if="to.label">{{to.label}}</div>
     <formly-form fields="to.fields"
                  model="objModel"
                  form="form">
