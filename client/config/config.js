@@ -7,6 +7,8 @@
 
   angular.module($snaphy.getModuleName())
 
+  
+
     
 
     /**
@@ -14,6 +16,14 @@
      */
     .run(['formlyConfig', '$timeout', 'Database',
       function(formlyConfig, $timeout, Database) {
+
+        formlyConfig.setType({
+            name:"multiSmartSelect",
+            templateUrl: '/formlyTemplate/views/multi-smart-select.html',
+            controller: ['$scope', '$rootScope', function controller($scope, $rootScope) {
+
+            }]
+        });
 
         formlyConfig.setType({
             name: 'htmlText',
