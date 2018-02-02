@@ -478,7 +478,7 @@ angular.module($snaphy.getModuleName())
                     var select = $(iElm).selectize();
                     var selectize = select[0].selectize;
                     var obj = {};
-                    obj = item;
+                    obj = angular.copy(item);
                     obj.id = item.id;
                     obj[scope.searchProperty] = item[scope.searchProperty];
 
