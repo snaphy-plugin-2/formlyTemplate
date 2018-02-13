@@ -413,9 +413,9 @@ angular.module($snaphy.getModuleName())
                         //Add this value to the scope.
                         var val = $.map(selectize.items, function(value) {
                             if(value){
-                                if(value.id){
+                                /* if(value.id){
                                     value.id = value.id.toString();
-                                }
+                                } */
                             }
                             return selectize.options[value];
                         });
@@ -446,9 +446,9 @@ angular.module($snaphy.getModuleName())
                                 delete val[indexFound].$order;
                             }
 
-                            if(val[indexFound]){
+                            /* if(val[indexFound]){
                                 val[indexFound].id = val[indexFound].id?val[indexFound].id.toString():undefined;
-                            }
+                            } */
 
                             //first check if the data doesnot
                             scope.value.push(val[indexFound]);
