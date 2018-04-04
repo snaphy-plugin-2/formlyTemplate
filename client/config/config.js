@@ -141,7 +141,7 @@
             var loadData = function(where){
                 dbService.find({
                   filter: {
-                    limit: 500,
+                    limit: 4000,
                     where: where || {},
                     order: order
                   }
