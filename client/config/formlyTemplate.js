@@ -351,14 +351,17 @@ angular.module($snaphy.getModuleName())
                 //Run the constructor on start..
                 function init() {
                     //Initialize the methods..
-                    if ($scope.model[$scope.options.key] === undefined) {
-                        addNew();
-                    } else {
+                    if($scope.to.init){
+                        if ($scope.model[$scope.options.key] === undefined) {
+                            addNew();
+                        }
+                    }
+                    /* else {
                         if ($scope.model[$scope.options.key].length === 0) {
                             //Add one data to the begining ..
                             addNew();
                         }
-                    }
+                    } */
                 }
 
                 function copyFields(fields) {
