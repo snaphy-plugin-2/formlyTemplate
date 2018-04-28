@@ -402,7 +402,7 @@ angular.module($snaphy.getModuleName())
                 }
 
                 //call the constructor method..
-                init();
+                //init();
 
                 return {
                     copyFields: copyFields,
