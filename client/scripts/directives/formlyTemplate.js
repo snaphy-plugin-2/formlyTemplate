@@ -37,10 +37,12 @@ angular.module($snaphy.getModuleName())
                 "searchProperty" : "@searchProperty",
                 //Contains the value of the data.. that needs to be updated.
                 "value"          : "=value",
+                "foreignKey"     : "@foreignKey",
                 "where"          : "=where",
                 "load"           : "=?load", //if init === true then fetched all data on start only.
                 "whereValidation": "=whereValidation",
                 "onChange"       : "&onChange",
+                "model"          : "=model",
                 //To display any additional property to..array of objects..
                 /**
                  * [ { name: "amount", "prefix": "Rupee" }  ]
@@ -49,6 +51,8 @@ angular.module($snaphy.getModuleName())
             },
             template: '<select ng-transclude><option value=""></option></select>' ,
             link: function(scope, iElm, iAttrs, controller) {
+                console.log(scope.foreignKey);
+                console.log(scope.searchProperty);
                 if(!scope.modelName || !scope.searchProperty){
                     console.error("Error >>> searchProperty and modelName attributes are required");
                     return false;
@@ -141,16 +145,17 @@ angular.module($snaphy.getModuleName())
                                     });
                                 }
                             });
-
                         }, //load function..
 
                         onItemRemove: function(value, $item){
                             $timeout(function () {
                                 //clear the value..
-                                scope.value = "";
+                                scope.value = {};
+                                if(scope.foreignKey){
+                                    scope.model[scope.foreignKey] = "";   
+                                }
                             }, 0);
                         },
-
                         onItemAdd: function(value, $item){
                             var select = $(iElm).selectize();
                             var selectize = select[0].selectize;
@@ -164,12 +169,18 @@ angular.module($snaphy.getModuleName())
                                     delete val[0].$order;
                                 }
                                 scope.value = val[0];
-
+                                if(scope.foreignKey){
+                                    if(scope.value){
+                                        if(scope.value.id){
+                                            scope.model[scope.foreignKey] = scope.value.id;
+                                        }
+                                    }
+                                }
+                                
                                 $timeout(function(){
                                     //Call the change functon..
                                     scope.onChange();
                                 }, 0);
-
                             }, 0);
 
                         }

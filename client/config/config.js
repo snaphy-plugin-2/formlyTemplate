@@ -6,11 +6,6 @@
   /* global angular, $snaphy */
 
   angular.module($snaphy.getModuleName())
-
-  
-
-    
-
     /**
      Defigning custom templates for angular-formly.
      */
@@ -141,7 +136,7 @@
             var loadData = function(where){
                 dbService.find({
                   filter: {
-                    limit: 500,
+                    limit: 400,
                     where: where || {},
                     order: order
                   }

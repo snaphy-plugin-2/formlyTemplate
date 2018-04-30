@@ -10,7 +10,7 @@
                 <div class="form-group">
                     <div ng-class="options.templateOptions.colSize">
                         <div  class="form-material" ng-class="options.templateOptions.color">
-
+                        
                             <autocomplete
                                     ng-if="options.templateOptions.id"
                                     placeholder="{{placeholder}}"
@@ -18,6 +18,8 @@
                                     search-property="{{to.searchProp}}"
                                     value="model[options.key]"
                                     where="to.where"
+                                    foreign-key= "{{to.foreignKey}}"
+                                    model= "model"
                                     load="to.load"
                                     where-validation="to.whereValidation"
                                     display-property="to.displayProperty"
@@ -29,6 +31,8 @@
                                     model-name="{{to.model}}"
                                     search-property="{{to.searchProp}}"
                                     value="model[options.key]"
+                                    foreign-key= "{{to.foreignKey}}"
+                                    model= "model"
                                     where="to.where"
                                     load="to.load"
                                     where-validation="to.whereValidation"
