@@ -18,6 +18,7 @@
                                     search-property="{{to.searchProp}}"
                                     value="model[options.key]"
                                     where="to.where"
+                                    exact-search= "to.exactSearch"
                                     foreign-key= "{{to.foreignKey}}"
                                     model= "model"
                                     load="to.load"
@@ -27,6 +28,7 @@
                             </autocomplete>
                             <autocomplete
                                     ng-if="!options.templateOptions.id"
+                                    exact-search= "to.exactSearch"
                                     placeholder="{{placeholder}}"
                                     model-name="{{to.model}}"
                                     search-property="{{to.searchProp}}"

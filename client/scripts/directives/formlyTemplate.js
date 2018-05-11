@@ -43,6 +43,7 @@ angular.module($snaphy.getModuleName())
                 "whereValidation": "=whereValidation",
                 "onChange"       : "&onChange",
                 "model"          : "=model",
+                "exactSearch"    : "=exactSearch",
                 //To display any additional property to..array of objects..
                 /**
                  * [ { name: "amount", "prefix": "Rupee" }  ]
@@ -51,8 +52,6 @@ angular.module($snaphy.getModuleName())
             },
             template: '<select ng-transclude><option value=""></option></select>' ,
             link: function(scope, iElm, iAttrs, controller) {
-                console.log(scope.foreignKey);
-                console.log(scope.searchProperty);
                 if(!scope.modelName || !scope.searchProperty){
                     console.error("Error >>> searchProperty and modelName attributes are required");
                     return false;
@@ -127,10 +126,14 @@ angular.module($snaphy.getModuleName())
                                     //Force convert object type in case of null..
                                     whereObj = whereObj ? whereObj: {};
                                     whereObj[scope.searchProperty] = {};
-
-                                    whereObj[scope.searchProperty].like = query;
-                                    //Make search case in-sensetive..
-                                    whereObj[scope.searchProperty].options = "i";
+                                    if(!scope.exactSearch){
+                                        whereObj[scope.searchProperty].like = query;
+                                        //Make search case in-sensetive..
+                                        whereObj[scope.searchProperty].options = "i";
+                                    }else{
+                                        whereObj[scope.searchProperty] = query;
+                                    }
+                                    
 
                                     dbService.find({
                                         filter: {
