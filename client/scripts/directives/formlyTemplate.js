@@ -364,8 +364,9 @@ angular.module($snaphy.getModuleName())
             replace: true,
             transclude: true,
             scope: {
-                "model" :  "=model",
-                "key"   :  "@key"
+                "model"         :  "=model",
+                "key"           :  "@key",
+                "placeholder"   : "@placeholder"
             },
             template: '<select class="selectize" ng-transclude ><option value=""></option></select>',
             link: function(scope, iElm, iAttrs, controller){

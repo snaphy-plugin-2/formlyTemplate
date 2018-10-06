@@ -2,13 +2,13 @@
     <div  ng-class="[options.templateOptions.colSize, options.templateOptions.color]">
         <div   class="form-material" ng-class="options.templateOptions.color">
             <multi-input ng-if="to.id"
-                placeholder="{{placeholder}}"
+                placeholder="{{to.placeholder}}"
                 model="model"
                 key="{{options.key}}" 
                 name="{{to.id}}" 
                 id="{{to.id}}">
             </multi-input>
-            <label for="{{id}}">{{label}}</label>
+            <label for="{{to.id}}">{{to.label}}</label>
         </div>
     </div>
 </div>
