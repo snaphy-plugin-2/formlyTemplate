@@ -1,13 +1,15 @@
 <div>
     <div  ng-class="[options.templateOptions.colSize, options.templateOptions.color]">
         <div   class="form-material" ng-class="options.templateOptions.color">
-            <multi-search ng-if="to.id"
+            {{model}}
+            <multi-input ng-if="to.id"
                 placeholder="{{placeholder}}"
-                model-name="{{to.modelName}}"
-                search-property="{{to.searchProp}}"
-                value="model[options.key]" name="{{to.id}}" id="{{to.id}}">
-            </multi-search>
+                model="model"
+                key="{{options.key}}" 
+                name="{{to.id}}" 
+                id="{{to.id}}">
+            </multi-input>
             <label for="{{id}}">{{label}}</label>
         </div>
     </div>
-  </div>
+</div>

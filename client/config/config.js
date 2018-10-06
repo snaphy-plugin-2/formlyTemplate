@@ -20,6 +20,9 @@
             }]
         });
 
+
+        
+
         formlyConfig.setType({
             name: 'htmlText',
             template: '<div ng-class="{\'form-group\': !options.templateOptions.inline, \'inline-elements\': options.templateOptions.inline}">' +
@@ -206,6 +209,15 @@
             }
 
         }] //Controller..
+        });
+
+
+        formlyConfig.setType({
+            name: "multiInput",
+            templateUrl: '/formlyTemplate/views/multi-input.html',
+            controller:["$scope", "$rootScope", function controller($scope, $rootScope){
+                    
+            }]
         });
       }
     ]);
