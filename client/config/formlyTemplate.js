@@ -10,6 +10,286 @@ angular.module($snaphy.getModuleName())
  */
 .run(['formlyConfig', '$timeout', function(formlyConfig, $timeout) {
 
+
+    formlyConfig.setType({
+        name: 'carouselUpload',
+        templateUrl: '/formlyTemplate/views/carousel.html',
+        link: function(scope, element) {
+            // Randomize progress bars values
+            scope.addValue = function(value) {
+                $(element)
+                    .find('.progress-bar')
+                    .each(function() {
+                        var $this = jQuery(this);
+                        var $random = value + '%';
+                        $this.css('width', $random);
+                    });
+
+            };
+
+        },
+        controller: ['$scope', 'Upload', '$timeout', '$http', 'Database', 'SnaphyTemplate', 'ImageUploadingTracker',
+            function($scope, Upload, $timeout, $http, Database, SnaphyTemplate, ImageUploadingTracker) {
+                //Initialize the model..
+                $scope.model[$scope.options.key] = $scope.model[$scope.options.key] || [];
+                $scope.files = [];
+
+
+                var dbService;
+                var url;
+                if ($scope.options.templateOptions.containerModel) {
+                    dbService = Database.loadDb($scope.options.templateOptions.containerModel);
+                } else if ($scope.options.templateOptions.url) {
+                    url = $scope.options.templateOptions.url;
+                } else {
+                    console.error("Either url property of containerModel is required in formly templateOptions for image uploading");
+                }
+                var uploadUrl;
+                if (dbService) {
+                    uploadUrl = "/api/containers/" + $scope.options.templateOptions.containerName + "/upload";
+
+                } else {
+                    uploadUrl = url.upload;
+                }
+
+
+                $scope.checkData = function() {
+                    if ($scope.files.length) {
+                        if ($scope.model[$scope.options.key] === undefined) {
+                            $scope.model[$scope.options.key] = [];
+                        }
+
+                        return true;
+                    } else {
+                        return false;
+                    }
+                };
+
+
+                $scope.loadFromServer = function(file) {
+                    if (file.result) {
+                        //Check if file really has one params..
+                        var count = 0;
+                        for (var key in file) {
+                            if (file.hasOwnProperty(key)) {
+                                count++;
+                            }
+                        }
+                        if (count <= 4) {
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    }
+                    return false;
+                };
+
+
+                $scope.loadUrl = function(file) {
+                    //TODO adding medium for small images load..
+                    var url = "/api/containers/" + file.result.container + "/download/medium_" + file.result.name;
+                    return url;
+                };
+
+
+                $scope.$watch('model[options.key].length', function(value) {
+                    if ($scope.model[$scope.options.key]) {
+                        $scope.model[$scope.options.key].forEach(function(modelData, index) {
+                            if ($scope.files.length !== 0) {
+                                var matchFound = false;
+                                $scope.files.forEach(function(dataObj, index) {
+                                    if (dataObj.result.name === modelData.name) {
+                                        matchFound = true;
+                                    }
+                                });
+                                if (!matchFound) {
+                                    $scope.files.push({
+                                        result: modelData
+                                    });
+                                }
+                            } else {
+                                $scope.files.push({
+                                    result: modelData
+                                });
+                            }
+                        }); //model loop
+                    } else {
+                        //Clean files data too..
+                        $scope.files = [];
+                    }
+                }); //$watch
+
+
+
+                $scope.uploadFiles = function($files, $file, $newFiles, $duplicateFiles, $invalidFiles, $event) {
+                    //Increment tracker..TODO CHECK HERE FOR ERROR POSIBILITY.
+                    ImageUploadingTracker.incrementTracker();
+
+                    //First initialize progress bar to zero..
+                    $scope.addValue(0);
+                    var file = $newFiles[0];
+                    $scope.f = file;
+                    var errFiles = $invalidFiles;
+                    $scope.errFile = errFiles && errFiles[0];
+                    //Only upload file if it is not a duplicate file..
+                    if (file && $duplicateFiles.length === 0 && errFiles.length === 0) {
+                        file.upload = Upload.upload({
+                            url: uploadUrl,
+                            data: {
+                                file: file
+                            }
+                        });
+
+                        file.upload.then(function(response) {
+                            $timeout(function() {
+                                //file.result = response.data.result.files.file[0];
+                                file.result = response.data;
+                                if ($scope.model[$scope.options.key] === undefined) {
+                                    $scope.model[$scope.options.key] = [];
+                                }
+                                //console.log(response);
+                                //Adding data to the model.
+                                $scope.model[$scope.options.key].push(file.result);
+                            });
+
+                            //Decrement tracker..TODO CHECK HERE FOR ERROR POSIBILITY.
+                            ImageUploadingTracker.decrementTracker();
+
+                            SnaphyTemplate.notify({
+                                message: "Image successfully saved to server.",
+                                type: 'success',
+                                icon: 'fa fa-check',
+                                align: 'right'
+                            });
+
+                        }, function(response) {
+                            if (response.status > 0) {
+                                //Decrement tracker..TODO CHECK HERE FOR ERROR POSIBILITY.
+                                ImageUploadingTracker.decrementTracker();
+                                SnaphyTemplate.notify({
+                                    message: "Error saving image to server. Please remove that image and try again.",
+                                    type: 'danger',
+                                    icon: 'fa fa-times',
+                                    align: 'right'
+                                });
+                                $scope.errorMsg = response.status + ': ' + response.data;
+                            }
+
+                        }, function(evt) {
+                            $timeout(function() {
+                                file.progress = Math.min(100, parseInt(100.0 *
+                                    evt.loaded / evt.total));
+                                $scope.addValue(file.progress);
+                            }, 10);
+                        });
+                    }else{
+                        ImageUploadingTracker.decrementTracker();
+                    }
+                };
+
+                //Delete the given image...
+                $scope.deleteImage = function(files, index) {
+                    var backUpFile = files[index];
+                    if (backUpFile.result) {
+                        var fileName = backUpFile.result.name;
+                        var containerName = $scope.options.templateOptions.containerName;
+                        var filePath = '/api/containers/' + containerName + '/files/' + fileName;
+                        //Now remove the file
+                        files.splice(index, 1);
+                        $scope.model[$scope.options.key].splice(index, 1);
+                        //console.log(backUpFile);
+                        // Simple DELETE request example:
+                        //console.log(filePath);
+
+                        if (dbService) {
+                            dbService.removeFile({
+                                container: containerName,
+                                file: "original_" + fileName
+                            }, function(values) {
+                                console.log("file successfully deleted");
+                                SnaphyTemplate.notify({
+                                    message: "Image successfully deleted from server.",
+                                    type: 'success',
+                                    icon: 'fa fa-check',
+                                    align: 'right'
+                                });
+
+                                if(fileName){
+                                    //var absFileName = fileName.replace(original, '');
+                                    //var originalFileName =  "original_" + absFileName;
+                                    var mediumFileName =  "medium_" + fileName;
+                                    var smallFileName = "small_" + fileName;
+                                    var thumbFilename = "thumb_" + fileName;
+
+                                    var deleteImage = function(dbService, containerName, fileName){
+                                    dbService.removeFile({
+                                        container: containerName,
+                                        file: fileName
+                                        }, function(){
+                                                //success do nothing..
+                                        }, function(){
+                                                //Error do nothing..
+                                        });
+                                    };
+
+                                    //Now delete all the related images too..
+                                    deleteImage(dbService, containerName, mediumFileName);
+                                    //deleteImage(dbService, containerName, originalFileName);
+                                    deleteImage(dbService, containerName, smallFileName);
+                                    deleteImage(dbService, containerName, thumbFilename);
+
+                                }
+
+                            }, function(err) {
+                                console.error("error deleting file.");
+                                SnaphyTemplate.notify({
+                                    message: "Error deleting image from server. Please try again.",
+                                    type: 'danger',
+                                    icon: 'fa fa-times',
+                                    align: 'right'
+                                });
+                                console.error(err);
+                                //Add backup file ..
+                                files.push(backUpFile);
+                                $scope.model[$scope.options.key].push(backUpFile.result);
+                            });
+                        } else {
+                            $http({
+                                method: 'DELETE',
+                                url: url.delete,
+                            }).then(function successCallback(response) {
+                                console.log("File successfully deleted.");
+                                SnaphyTemplate.notify({
+                                    message: "Image successfully deleted from server.",
+                                    type: 'success',
+                                    icon: 'fa fa-check',
+                                    align: 'right'
+                                });
+                            }, function errorCallback(response) {
+                                console.log(response);
+                                SnaphyTemplate.notify({
+                                    message: "Error deleting image from server. Please try again.",
+                                    type: 'danger',
+                                    icon: 'fa fa-times',
+                                    align: 'right'
+                                });
+                                //Add backup file ..
+                                files.push(backUpFile);
+                            });
+                        }
+
+                    } else {
+                        //simply remove the file
+                        files.splice(index, 1);
+                        $scope.model[$scope.options.key].splice(index, 1);
+                    }
+                };
+
+            }
+        ]
+    });
+
+
     formlyConfig.setType({
         name: 'belongsTo',
         templateUrl: '/formlyTemplate/views/autocomplete.html',
