@@ -341,7 +341,7 @@ angular.module($snaphy.getModuleName())
         name: 'arrayValue',
         templateUrl: '/formlyTemplate/views/arrayTemplate.html',
         link: function(scope, element, attrs) {},
-        controller: ["$scope", function($scope) {
+        controller: ["$scope", "$rootScope", function($scope, $rootScope) {
             var unique = 1;
             $scope.formOptions = {
                 formState: $scope.formState
@@ -375,12 +375,14 @@ angular.module($snaphy.getModuleName())
                     var repeatsection = $scope.model[$scope.options.key];
                     //var lastSection = repeatsection[repeatsection.length - 1];
                     var newsection = {};
-                    // if (lastSection) {
-                    //     newsection = angular.copy(lastSection);
-                    // }
-
-                    //console.log(newsection);
+                    
                     repeatsection.push(newsection);
+                    if($scope.to.onAddBtnClick){
+                        $rootScope.$broadcast($scope.to.onAddBtnClick, {
+                            model: $scope.model,
+                            key: $scope.options.key
+                        });
+                    }
                 }
 
                 function addRandomIds(fields) {
