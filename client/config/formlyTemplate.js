@@ -370,6 +370,16 @@ angular.module($snaphy.getModuleName())
                     return fields;
                 }
 
+                function onRemove(index){
+                    $scope.model[$scope.options.key].splice(index, 1);
+                    if($scope.to.onRemoveBtnClick){
+                        $rootScope.$broadcast($scope.to.onRemoveBtnClick, {
+                            model: $scope.model,
+                            key: $scope.options.key
+                        });
+                    }
+                }
+
                 function addNew() {
                     $scope.model[$scope.options.key] = $scope.model[$scope.options.key] || [];
                     var repeatsection = $scope.model[$scope.options.key];
@@ -408,7 +418,8 @@ angular.module($snaphy.getModuleName())
 
                 return {
                     copyFields: copyFields,
-                    addNew: addNew
+                    addNew: addNew,
+                    onRemove: onRemove
                 };
 
             })();
@@ -423,6 +434,7 @@ angular.module($snaphy.getModuleName())
 
 
             $scope.addNew = methods.addNew;
+            $scope.onRemove = methods.onRemove;
             $scope.copyFields = methods.copyFields;
         }]
     });
