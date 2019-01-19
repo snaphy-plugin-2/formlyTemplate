@@ -358,6 +358,152 @@ angular.module($snaphy.getModuleName())
 
 
 
+    .directive('multiInput', ['$timeout', function($timeout){
+        return {
+            restrict: 'E',
+            replace: true,
+            transclude: true,
+            scope: {
+                "model"         :  "=model",
+                "key"           :  "@key",
+                "placeholder"   : "@placeholder"
+            },
+            template: '<select class="selectize" ng-transclude ><option value=""></option></select>',
+            link: function(scope, iElm, iAttrs, controller){
+                scope.placeholder = scope.placeholder || "";
+                scope.model = scope.model || {};
+                scope.model[scope.key] = scope.model[scope.key] || []; 
+                $(iElm).attr("placeholder", scope.placeholder);
+
+                var selectize_ = $(iElm).selectize({
+                    maxItems: 10,
+                    delimiter: ',',
+                    persist: false,
+                    create: true,
+                    onItemAdd: function(value){
+                        $timeout(function () {
+                            scope.model            = scope.model || {};
+                            scope.model[scope.key] = scope.model[scope.key] || []; 
+                            const index = scope.model[scope.key].indexOf(value);
+                            //Check if Value already present dont add
+                            if(index === -1){
+                                scope.model[scope.key].push(value);
+                            }
+                        });
+                    }
+                }); //END OF Selectize function..
+
+
+                
+                var select = $(iElm).selectize();
+                var selectize = select[0].selectize;
+                selectize.on("item_remove", function(value, $item){
+                    scope.model            = scope.model || {};
+                    scope.model[scope.key] = scope.model[scope.key] || []; 
+                    //Remove the data from the model too..
+                    var index = null;
+                    for(var i=0; i<scope.model[scope.key].length; i++){
+                        var item = scope.model[scope.key][i];
+                        if(item.toString() === value.toString()){
+                            index = i;
+                            break;
+                        }
+                    }
+
+                    if(index !== null){
+                        $timeout(function(){
+                            //remove the element too...
+                            scope.model[scope.key].splice(index, 1);
+                        }, 0);
+                    }
+
+                });
+
+
+
+
+
+                //adding items programatically..
+                function addValue(item){
+                    var select = $(iElm).selectize();
+                    var selectize = select[0].selectize;
+                    selectize.addOption({
+                        value: item,
+                        text: item
+                    });
+                    selectize.addItem(item);
+                }
+
+                scope.watchModel = function(){
+                    if(scope.model[scope.key]){
+                        return scope.model[scope.key];
+                    }
+
+                };
+
+
+                scope.$watch('watchModel()', function(){
+                    var select = $(iElm).selectize();
+                    var selectize = select[0].selectize;
+                    //Add this value to the scope.
+                    var val = $.map(selectize.items, function(value) {
+                        return selectize.options[value];
+                    });
+                    if(scope.model[scope.key] !== undefined){
+                        if(scope.model[scope.key].length && val.length === 0){
+                            scope.model[scope.key].forEach(function(itemVal){
+                                //Now check if the model has value or not..
+                                if(itemVal){
+                                    //Now add data
+                                    addValue(itemVal);
+                                }
+                            });
+                        }else{
+                            if( scope.model[scope.key].length === 0 && val.length){
+                                $timeout(function(){
+                                    var select = $(iElm).selectize();
+                                    var selectize = select[0].selectize;
+                                    selectize.clear();
+                                }, 0);
+                            }else{
+                                if(scope.model[scope.key].length !== val.length){
+
+                                    val.forEach(function(item){
+                                        var matchFound = false;
+                                        for(var i=0; i< scope.model[scope.key].length; i++){
+                                            var selectedValue =  scope.model[scope.key][i];
+                                            if( item.toString().trim() === selectedValue.toString().trim()){
+                                                matchFound = true;
+                                                break;
+                                            }
+                                        }
+                                        if(!matchFound){
+                                            $timeout(function(){
+                                                var select = $(iElm).selectize();
+                                                var selectize = select[0].selectize;
+                                                selectize.removeItem(item);
+                                            }, 0);
+                                        }
+                                    });
+                                }
+                            }
+                        }
+                    }
+                    else{
+                        $timeout(function(){
+                            var select = $(iElm).selectize();
+                            var selectize = select[0].selectize;
+                            selectize.clear();
+                        }, 0);
+                    }
+
+                });//watch
+
+            }
+        };
+    }])
+
+
     //Autocomplete for multi data add..
     .directive('multiSearch', ['Database', '$timeout', function(Database, $timeout) {
         // Runs during compile
