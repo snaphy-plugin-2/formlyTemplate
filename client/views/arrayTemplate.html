@@ -22,8 +22,7 @@
             </div>
             <hr>
         </div>
-        <div  class="AddNewButton">
-
+        <div ng-if="to.showAddBtn !== false"  class="AddNewButton">
             <button type="button"   class="btn btn-md btn-primary-dark" ng-click="addNew()" >{{to.btnText}}</button>
         </div>
     </div>
