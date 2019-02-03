@@ -30,6 +30,11 @@ angular.module($snaphy.getModuleName())
                 }
             };
 
+            
+            function getRandomInt(min, max) {
+                return Math.floor(Math.random() * (max - min)) + min;
+            }
+
 
             var trackWhere = function(){
 
