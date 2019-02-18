@@ -310,6 +310,11 @@ angular.module($snaphy.getModuleName())
                 }
             };
 
+            
+            function getRandomInt(min, max) {
+                return Math.floor(Math.random() * (max - min)) + min;
+            }
+
 
             var trackWhere = function(){
 
@@ -621,7 +626,7 @@ angular.module($snaphy.getModuleName())
         name: 'arrayValue',
         templateUrl: '/formlyTemplate/views/arrayTemplate.html',
         link: function(scope, element, attrs) {},
-        controller: ["$scope", function($scope) {
+        controller: ["$scope", "$rootScope", function($scope, $rootScope) {
             var unique = 1;
             $scope.formOptions = {
                 formState: $scope.formState
@@ -650,17 +655,29 @@ angular.module($snaphy.getModuleName())
                     return fields;
                 }
 
+                function onRemove(index){
+                    $scope.model[$scope.options.key].splice(index, 1);
+                    if($scope.to.onRemoveBtnClick){
+                        $rootScope.$broadcast($scope.to.onRemoveBtnClick, {
+                            model: $scope.model,
+                            key: $scope.options.key
+                        });
+                    }
+                }
+
                 function addNew() {
                     $scope.model[$scope.options.key] = $scope.model[$scope.options.key] || [];
                     var repeatsection = $scope.model[$scope.options.key];
                     //var lastSection = repeatsection[repeatsection.length - 1];
                     var newsection = {};
-                    // if (lastSection) {
-                    //     newsection = angular.copy(lastSection);
-                    // }
-
-                    //console.log(newsection);
+                    
                     repeatsection.push(newsection);
+                    if($scope.to.onAddBtnClick){
+                        $rootScope.$broadcast($scope.to.onAddBtnClick, {
+                            model: $scope.model,
+                            key: $scope.options.key
+                        });
+                    }
                 }
 
                 function addRandomIds(fields) {
@@ -686,7 +703,8 @@ angular.module($snaphy.getModuleName())
 
                 return {
                     copyFields: copyFields,
-                    addNew: addNew
+                    addNew: addNew,
+                    onRemove: onRemove
                 };
 
             })();
@@ -701,6 +719,7 @@ angular.module($snaphy.getModuleName())
 
 
             $scope.addNew = methods.addNew;
+            $scope.onRemove = methods.onRemove;
             $scope.copyFields = methods.copyFields;
         }]
     });

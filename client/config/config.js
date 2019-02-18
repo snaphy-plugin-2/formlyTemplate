@@ -20,6 +20,9 @@
             }]
         });
 
+
+        
+
         formlyConfig.setType({
             name: 'htmlText',
             template: '<div ng-class="{\'form-group\': !options.templateOptions.inline, \'inline-elements\': options.templateOptions.inline}">' +
@@ -73,7 +76,7 @@
         formlyConfig.setType({
           name: 'smartSelect',
           templateUrl: '/formlyTemplate/views/smart-select.html',
-          controller: ['$scope', '$rootScope', function controller($scope, $rootScope) {
+          controller: ['$scope', '$rootScope', '$state', function controller($scope, $rootScope, $state) {
             // if(!$scope.to.modelName || !$scope.to.searchProperty){
             //     console.error("Error >>> searchProperty and modelName attributes are required");
             //     return false;
@@ -183,14 +186,23 @@
                 }
             };
 
-              //Get Where Value of Object..
+            //Get Where Value of Object..
             var getWhere = function(where){
                 where = where || {};
                 if($scope.to.filter){
                     if($scope.to.filter.where){
                         for(var key in $scope.to.filter.where){
                             if($scope.to.filter.where.hasOwnProperty(key)) {
-                                where[key] = $scope.to.filter.where[key];
+                                var patt = /\$state.+/;
+                                var whereVal = $scope.to.filter.where[key];
+                                if(patt.test(whereVal)){
+                                    var stateParam = whereVal.replace("$state.", '');
+                                    if(stateParam && $state.params[stateParam]){
+                                        whereVal = $state.params[stateParam];   
+                                    }
+                                }
+
+                                 where[key] = whereVal;
                             }
                         }
                     }
@@ -206,6 +218,15 @@
             }
 
         }] //Controller..
+        });
+
+
+        formlyConfig.setType({
+            name: "multiInput",
+            templateUrl: '/formlyTemplate/views/multi-input.html',
+            controller:["$scope", "$rootScope", function controller($scope, $rootScope){
+                    
+            }]
         });
       }
     ]);
