@@ -627,7 +627,10 @@ angular.module($snaphy.getModuleName())
         templateUrl: '/formlyTemplate/views/arrayTemplate.html',
         link: function(scope, element, attrs) {},
         controller: ["$scope", "$rootScope", function($scope, $rootScope) {
-            var unique = 1;
+            //Create a copy of display at init..
+            $scope.display = $scope.to.display;
+         
+            var unique = 1, onDisplayWhenListener;
             $scope.formOptions = {
                 formState: $scope.formState
             };
@@ -718,9 +721,42 @@ angular.module($snaphy.getModuleName())
             };
 
 
+             //Anonymous function to check the broadcast receiver..
+            (function () {
+                if($scope.to.displayWhen){
+                    onDisplayWhenListener = $rootScope.$on($scope.to.displayWhen, function (data, args) {
+                        if(args.display){
+                            $scope.display = true
+                        }else{
+                            $scope.display = false
+                        }
+
+                        if(args.fields && args.fields.length){
+                            $scope.fields = args.fields;
+                        }
+                    });
+                }
+            })();
+
+
+            ///Destroy event on page change..
+            $scope.$on('$destroy', function() {
+                if(onDisplayWhenListener){
+                    onDisplayWhenListener();
+                }
+            });
+
+
+
+
+
             $scope.addNew = methods.addNew;
             $scope.onRemove = methods.onRemove;
             $scope.copyFields = methods.copyFields;
+
+            //Initialize..
+            //Create Fields on Initialize..
+            $scope.fields = $scope.copyFields($scope.to.fields);
         }]
     });
 

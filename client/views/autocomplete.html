@@ -15,6 +15,8 @@
                                     ng-if="options.templateOptions.id"
                                     placeholder="{{placeholder}}"
                                     model-name="{{to.model}}"
+                                    on-remove="{{to.onRemove}}"
+                                    on-select="{{to.onSelect}}"
                                     search-property="{{to.searchProp}}"
                                     value="model[options.key]"
                                     where="to.where"
@@ -24,13 +26,16 @@
                                     load="to.load"
                                     where-validation="to.whereValidation"
                                     display-property="to.displayProperty"
-                                    name="{{getName()}}" id="{{getId()}}" >
+                                    name="{{getName()}}" id="{{getId()}}"
+                                     >
                             </autocomplete>
                             <autocomplete
                                     ng-if="!options.templateOptions.id"
                                     exact-search= "to.exactSearch"
                                     placeholder="{{placeholder}}"
                                     model-name="{{to.model}}"
+                                    on-remove="{{to.onRemove}}"
+                                    on-select="{{to.onSelect}}"
                                     search-property="{{to.searchProp}}"
                                     value="model[options.key]"
                                     foreign-key= "{{to.foreignKey}}"

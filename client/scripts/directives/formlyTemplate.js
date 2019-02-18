@@ -26,7 +26,7 @@ angular.module($snaphy.getModuleName())
 
     
     //Autocomplete for selectize search..
-    .directive('autocomplete', ['Database', '$timeout', 'SnaphyTemplate', function(Database, $timeout, SnaphyTemplate) {
+    .directive('autocomplete', ['Database', '$timeout', 'SnaphyTemplate', '$rootScope', function(Database, $timeout, SnaphyTemplate, $rootScope) {
         // Runs during compile
         return {
             restrict: 'E',
@@ -44,6 +44,8 @@ angular.module($snaphy.getModuleName())
                 "onChange"       : "&onChange",
                 "model"          : "=model",
                 "exactSearch"    : "=exactSearch",
+                "onRemove"       : "@onRemove",
+                "onSelect"       : "@onSelect",
                 //To display any additional property to..array of objects..
                 /**
                  * [ { name: "amount", "prefix": "Rupee" }  ]
@@ -154,9 +156,20 @@ angular.module($snaphy.getModuleName())
                             $timeout(function () {
                                 //clear the value..
                                 scope.value = {};
+                                
+                                $timeout(function(){
+                                    if(scope.onRemove){
+                                        //Broadcast Event if present..
+                                        $rootScope.$broadcast(scope.onRemove, {
+                                            model: scope.model,
+                                        });
+                                    }
+                                }, 0);
+
                                 if(scope.foreignKey){
                                     scope.model[scope.foreignKey] = "";   
                                 }
+                                
                             }, 0);
                         },
                         onItemAdd: function(value, $item){
@@ -181,6 +194,14 @@ angular.module($snaphy.getModuleName())
                                 }
                                 
                                 $timeout(function(){
+                                    if(scope.onSelect){
+                                        //Broadcast Event if present..
+                                        $rootScope.$broadcast(scope.onSelect, {
+                                            data: scope.value,
+                                            model: scope.model,
+                                            foreignKey:scope.foreignKey
+                                        });
+                                    }
                                     //Call the change functon..
                                     scope.onChange();
                                 }, 0);
