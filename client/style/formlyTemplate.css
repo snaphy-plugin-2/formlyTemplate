@@ -69,3 +69,11 @@
     text-align: left;
     font-weight: bold;
 }
+
+
+.calendar-label{
+    font-size: 13px;
+    margin-bottom: 5px !important;
+    font-weight: 600;
+    margin-top: -8px;
+}

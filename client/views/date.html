@@ -1,8 +1,12 @@
-<div ng-class="{'form-group': !options.templateOptions.inline, 'inline-elements': options.templateOptions.inline}" >
-    <div ng-class="[options.templateOptions.colSize, options.templateOptions.color]" ng-style="options.templateOptions.style">
+<div ng-class="{'form-group': !options.templateOptions.inline, 'inline-elements': options.templateOptions.inline}">
+    <div ng-class="[options.templateOptions.colSize, options.templateOptions.color]"
+        ng-style="options.templateOptions.style">
+        <p class="calendar-label" ng-if="to.label"> {{to.label}} </p>
         <div class="input-daterange input-group">
-            <span style="border-right-width: 1px;width: 34px;" class="input-group-addon"><i class="fa fa-calendar"></i></span>
-            <input ng-model="date" ng-change="onChange(date)" id="{{to.id}}" class="form-control" type="text"  name="{{to.id}}" placeholder="{{to.placeholder}}">
+            <span style="border-right-width: 1px;width: 34px;" class="input-group-addon"><i
+                    class="fa fa-calendar"></i></span>
+            <input ng-model="date" ng-change="onChange(date)" id="{{to.id}}" class="form-control" type="text"
+                name="{{to.id}}" placeholder="{{to.placeholder}}">
         </div>
     </div>
 </div>
