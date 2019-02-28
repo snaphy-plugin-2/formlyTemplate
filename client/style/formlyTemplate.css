@@ -63,3 +63,9 @@
 .show{
     display: block;
 }
+
+
+.autocomplete-label{
+    text-align: left;
+    font-weight: bold;
+}

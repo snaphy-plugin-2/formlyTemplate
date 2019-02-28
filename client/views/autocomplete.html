@@ -10,7 +10,9 @@
                 <div class="form-group">
                     <div ng-class="options.templateOptions.colSize">
                         <div  class="form-material" ng-class="options.templateOptions.color">
-                        
+                            <div ng-if="to.label" class="autocomplete-label">
+                                {{to.label}}
+                            </div>
                             <autocomplete
                                     ng-if="options.templateOptions.id"
                                     placeholder="{{placeholder}}"
