@@ -66,8 +66,11 @@
 
 
 .autocomplete-label{
+    font-size: 13px;
     text-align: left;
-    font-weight: bold;
+    font-weight: 600;
+    margin-top: -10px;
+    margin-bottom: 6px;
 }
 
 
