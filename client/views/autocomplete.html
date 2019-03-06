@@ -15,7 +15,7 @@
                             </div>
                             <autocomplete
                                     ng-if="options.templateOptions.id"
-                                    placeholder="{{placeholder}}"
+                                    placeholder="{{to.placeholder}}"
                                     model-name="{{to.model}}"
                                     on-remove="{{to.onRemove}}"
                                     on-select="{{to.onSelect}}"
@@ -34,7 +34,7 @@
                             <autocomplete
                                     ng-if="!options.templateOptions.id"
                                     exact-search= "to.exactSearch"
-                                    placeholder="{{placeholder}}"
+                                    placeholder="{{to.placeholder}}"
                                     model-name="{{to.model}}"
                                     on-remove="{{to.onRemove}}"
                                     on-select="{{to.onSelect}}"
