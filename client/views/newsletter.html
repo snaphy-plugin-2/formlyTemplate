@@ -1,0 +1,9 @@
+<div ng-class="{'form-group': !options.templateOptions.inline, 'inline-elements': options.templateOptions.inline}">
+    <div ng-class="options.templateOptions.colSize">
+        <div class="form-material" ng-class="options.templateOptions.color">
+            <div ng-attr-id="{{options.templateOptions.id}}">
+                {{model[options.key]}}
+            </div>
+        </div>
+    </div>
+</div>

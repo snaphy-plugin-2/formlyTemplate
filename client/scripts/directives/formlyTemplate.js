@@ -16,6 +16,9 @@ angular.module($snaphy.getModuleName())
 
                 $timeout(function () {
                     CKEDITOR.disableAutoInline = true;
+                    CKEDITOR.config.allowedContent = true;
+                    CKEDITOR.config.extraAllowedContent = '*(*);*{*}';
+                    CKEDITOR.config.extraAllowedContent = 'span;ul;li;table;td;style;*[id];*(*);*{*}';
                     CKEDITOR.replace(iAttrs.id);
 
                 }); //timeout method..
