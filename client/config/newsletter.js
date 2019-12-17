@@ -14,88 +14,48 @@
             formlyConfig.setType({
                 name: 'newsletter',
                 templateUrl: '/formlyTemplate/views/newsletter.html',
-                link: function($scope, el, attrs) {
-                    //var randomId = Math.floor(100000000 + Math.random() * 900000000);
-                    // $scope.options.templateOptions.id = $scope.options.templateOptions.id || "";
-                    // $scope.options.templateOptions.id = $scope.options.templateOptions.id + "_" + randomId.toString();
-                },
                 controller: ["$scope", function ($scope) {
                     var randomId = Math.floor(100000000 + Math.random() * 900000000);
                     $scope.options.templateOptions.id = $scope.options.templateOptions.id || "";
                     $scope.options.templateOptions.id = $scope.options.templateOptions.id + "_" + randomId.toString();
                     var id = '#' + $scope.options.templateOptions.id;
-                    
                     $timeout(function(){
-                        // console.log("Id",$scope.model[$scope.options.key])
-                        $scope.$watch('model[options.key]', function(){
-                            console.log("Id",$scope.model[$scope.options.key])
-                            var editor = grapesjs.init({
-                                container : id,
-                                // Disable the storage manager for the moment
-                                //storageManager: false,
-                                // fromElement: true,
-                                // components: $scope.model[$scope.options.key],
-                                plugins: ['gjs-preset-newsletter'],
-                                pluginsOpts: {
-                                  'gjs-preset-newsletter': {
-                                    modalTitleImport: 'Import template',
-                                    // ... other options
-                                  }
-                                }
-                            });
+                        var editor, initialized = false;
+                        editor = grapesjs.init({
+                            container : id,
+                            plugins: ['gjs-preset-newsletter'],
+                            storageManager: {
+                                autoload: false,
+                                autosave: false
+                            },
+                            // Disable the storage manager for the moment
+                            components: $scope.model[$scope.options.key],
+                            // fromElement: true,
+                            pluginsOpts: {
+                              'gjs-preset-newsletter': {
+                                modalTitleImport: 'Import template',
+                              }
+                            }
                         });
-                        // var editor = grapesjs.init({
-                        //     container : id,
-                        //     // Disable the storage manager for the moment
-                        //     //storageManager: false,
-                        //     // fromElement: true,
-                        //     components: $scope.model[$scope.options.key],
-                        //     plugins: ['gjs-preset-newsletter'],
-                        //     pluginsOpts: {
-                        //       'gjs-preset-newsletter': {
-                        //         modalTitleImport: 'Import template',
-                        //         // ... other options
-                        //       }
-                        //     }
-                        // });
 
-                        // editor.on('change:changesCount', (some, argument) => {
-                        //     // do something
-                        //     var html =  editor.runCommand('gjs-get-inlined-html');
-                        //     $scope.model[$scope.options.key] = html
-                        //  })
+
+                        editor.on('change:changesCount', (some, argument) => {
+                            var html =  editor.runCommand('gjs-get-inlined-html');
+                            $scope.model[$scope.options.key] = html
+                        });
+
+                        // // editor.render();
+                        // $scope.$watch('model[options.key]', function(){
+                        //     if(!initialized){
+                        //         console.log("loading")
+                        //         //var data = $scope.model[$scope.options.key] || "";
+                        //         //editor.getModel().setComponents(data)
+                        //         initialized = true;
+                        //     }
+                            
+                        // });
+                      
                     }, 1000)
-                    
-                    // var getInstance = function(){
-                    //     return CKEDITOR.instances[$scope.options.templateOptions.id];
-                    // };
-    
-    
-                    // $timeout(function () {
-                    //     //Listen to onchange value..
-                    //     if(getInstance()){
-                    //         getInstance().on('change', function() {
-                    //             var htmlValue = getInstance().getData();
-                    //             $scope.model[$scope.options.key] = "<html><body>"+htmlValue+"</body></html>";
-                    //         });
-                    //     }
-    
-    
-                    //     if(getInstance()){
-                    //         $scope.$watch('model[options.key]', function(){
-                    //             getInstance().setData($scope.model[$scope.options.key]);
-                    //         });
-                    //     }
-    
-                    //     //Set default value for label..
-                    //     if ($scope.options.templateOptions.row === undefined) {
-                    //         $scope.options.templateOptions.row = 3;
-                    //     }
-    
-                    //     if ($scope.options.templateOptions.colSize === undefined) {
-                    //         $scope.options.templateOptions.colSize = "col-sm-12";
-                    //     }
-                    // }, 200);
                 }]
             });
     
