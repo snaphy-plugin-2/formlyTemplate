@@ -1812,4 +1812,16 @@ angular.module($snaphy.getModuleName())
             }
         });
 
-    }]);
+    
+
+    //Date template..
+    formlyConfig.setType({
+        name: 'datetime',
+        templateUrl:'/formlyTemplate/views/datetime.html',
+        link: function(scope, elem, attrs){
+            
+
+        }
+    });
+
+}]);

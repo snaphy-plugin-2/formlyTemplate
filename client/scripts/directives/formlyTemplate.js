@@ -3,6 +3,16 @@
 /*global $, jQuery, $snaphy, angular*/
 angular.module($snaphy.getModuleName())
 
+.directive('newsletter', ['$timeout', function ($timeout) {
+    return {
+        restrict: 'A',
+        link: function (scope, iElement, iAttrs) {
+
+            console.log("Loading Directive");
+        } //End of Link function...
+    }; // End of return
+}])
+
     .directive('snaphyCkEditor', ['$timeout', function ($timeout) {
         return {
             restrict: 'A',
@@ -16,6 +26,9 @@ angular.module($snaphy.getModuleName())
 
                 $timeout(function () {
                     CKEDITOR.disableAutoInline = true;
+                    CKEDITOR.config.allowedContent = true;
+                    CKEDITOR.config.extraAllowedContent = '*(*);*{*}';
+                    CKEDITOR.config.extraAllowedContent = 'span;ul;li;table;td;style;*[id];*(*);*{*}';
                     CKEDITOR.replace(iAttrs.id);
 
                 }); //timeout method..

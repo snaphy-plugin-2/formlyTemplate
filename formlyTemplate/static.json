@@ -10,7 +10,8 @@
     "/formlyTemplate/config/formlyTemplate.js": "formlyTemplateAllConfig",
     "/formlyTemplate/config/config.js": "formlyTemplateConfig",
     "/static/bower_components/ng-file-upload-shim/ng-file-upload-shim.min.js": "ng-file-upload-shim",
-    "/formlyTemplate/library/ckeditor/ckeditor.js": "ckEditor"
+    "/formlyTemplate/library/ckeditor/ckeditor.js": "ckEditor",
+    "/formlyTemplate/config/newsletter.js": "newsletterEditor"
   },
   "moduleDependencies": {
     "/static/bower_components/ng-file-upload/ng-file-upload.min.js": "ngFileUpload"
